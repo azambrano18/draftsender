@@ -62,7 +62,7 @@ Este proyecto permite la automatización del proceso de creación y envío de bo
 ## Estructura del Proyecto
 
 ```
-crea_borradores/
+draftsender/
 ├── actualizacion.py          # Lógica para verificar y descargar actualizaciones del software.
 ├── archivos.py               # Funciones para cargar los archivos Excel y DOCX.
 ├── borradores.py             # Funciones para crear los borradores de correos en Outlook.
