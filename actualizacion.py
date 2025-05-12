@@ -2,6 +2,8 @@ import os  # Manejo de rutas de archivos
 import sys  # Acceso a funciones del sistema
 import json  # Para procesar respuestas JSON
 import urllib.request  # Para hacer solicitudes HTTP
+import ssl  # Para contexto SSL
+import certifi  # Certificados raíz actualizados
 import subprocess  # Para ejecutar procesos externos
 import time  # Medir tiempo y calcular velocidad
 from tkinter import messagebox  # Cuadros de diálogo para el usuario
@@ -11,12 +13,12 @@ from version import __version__  # Importa la versión actual del sistema
 
 logger = configurar_logger("actualizacion")  # Función personalizada para logging
 
-def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var, forzar=False):  # Verifica si hay una nueva versión y la descarga si es necesario
+def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var, forzar=False):
     """
     Verifica si hay una nueva versión disponible del programa en GitHub.
     Descarga draftsender.exe si es necesario y lo ejecuta como draftsender_<versión>.exe
     """
-    url_api = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"  # URL del API de GitHub para obtener la última versión
+    url_api = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
 
     try:
         logger.info("Verificando actualización...")
@@ -24,7 +26,8 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         status_label.pack(side="bottom", pady=(0, 5))
         root.update_idletasks()
 
-        with urllib.request.urlopen(url_api) as response:  # Realiza la solicitud HTTP y procesa la respuesta JSON
+        context = ssl.create_default_context(cafile=certifi.where())
+        with urllib.request.urlopen(url_api, context=context) as response:
             data = json.loads(response.read())
             ultima_version = data["tag_name"].lstrip("v")
             assets = data["assets"]
@@ -35,20 +38,20 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
             frame_progreso.pack(side="bottom", fill="x", padx=10, pady=5)
             root.update_idletasks()
 
-        if forzar or ultima_version != obtener_version_actual():  # Compara la versión actual con la última disponible
+        if forzar or ultima_version != obtener_version_actual():
             logger.info("Nueva versión detectada. Solicitando confirmación al usuario.")
 
-            if messagebox.askyesno("Actualización disponible", f"Hay una nueva versión ({ultima_version}). ¿Deseas descargarla ahora?"):  # Cuadros de diálogo para el usuario
-                exe_dir = os.path.dirname(sys.executable)  # Directorio donde está ubicado el ejecutable actual
+            if messagebox.askyesno("Actualización disponible", f"Hay una nueva versión ({ultima_version}). ¿Deseas descargarla ahora?"):
+                exe_dir = os.path.dirname(sys.executable)
 
                 archivos = {
                     "draftsender.exe": f"draftsender_{ultima_version}.exe"
                 }
 
-                descargas = [a for a in assets if a["name"] in archivos]  # Filtra los archivos a descargar desde los assets
+                descargas = [a for a in assets if a["name"] in archivos]
                 if not descargas:
                     logger.warning("No se encontraron archivos para descargar.")
-                    messagebox.showwarning("No hay archivos", "No se encontraron archivos para actualizar.")  # Cuadros de diálogo para el usuario
+                    messagebox.showwarning("No hay archivos", "No se encontraron archivos para actualizar.")
                     frame_progreso.pack_forget()
                     status_label.pack_forget()
                     return
@@ -56,7 +59,7 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 avance = 100 // len(descargas)
                 base = 0
 
-                for asset in descargas:  # Itera sobre cada archivo que se debe descargar
+                for asset in descargas:
                     nombre = asset["name"]
                     url = asset["browser_download_url"]
                     destino = os.path.join(exe_dir, archivos[nombre])
@@ -72,14 +75,14 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                         )
                     except Exception as e:
                         logger.error(f"Error al descargar el archivo {nombre}: {e}")
-                        messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo {nombre}. Intenta nuevamente.")  # Cuadros de diálogo para el usuario
+                        messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo {nombre}. Intenta nuevamente.")
                         frame_progreso.pack_forget()
                         status_label.pack_forget()
                         return
 
                     base += avance
 
-                barra_progreso["value"] = 100  # Marca el progreso al 100%
+                barra_progreso["value"] = 100
                 porcentaje_var.set("100%")
                 status_var.set("Actualización descargada y aplicada.")
                 root.update_idletasks()
@@ -92,35 +95,35 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                     except Exception as e:
                         logger.warning(f"Error al ocultar elementos: {e}")
 
-                root.after(5000, ocultar_mensaje)  # Oculta elementos después de 5 segundos
+                root.after(5000, ocultar_mensaje)
 
                 nuevo_path = os.path.join(exe_dir, f"draftsender_{ultima_version}.exe")
                 logger.info(f"Ejecución de la nueva versión: {nuevo_path}")
-                messagebox.showinfo("Actualización", "Se lanzará la nueva versión ahora.")  # Cuadros de diálogo para el usuario
-                subprocess.Popen([nuevo_path])  # Lanza el nuevo ejecutable descargado
+                messagebox.showinfo("Actualización", "Se lanzará la nueva versión ahora.")
+                subprocess.Popen([nuevo_path])
                 sys.exit()
         else:
             logger.info("Ya tienes la última versión.")
             status_var.set("Ya tienes la última versión instalada.")
-            root.after(5000, lambda: status_var.set(""))  # Oculta elementos después de 5 segundos
+            root.after(5000, lambda: status_var.set(""))
             frame_progreso.pack_forget()
             status_label.pack_forget()
 
     except Exception as e:
         logger.exception(f"Fallo en la verificación de actualización desde {url_api}")
-        messagebox.showerror("Error", f"No se pudo verificar actualización:\n{e}")  # Cuadros de diálogo para el usuario
+        messagebox.showerror("Error", f"No se pudo verificar actualización:\n{e}")
         status_var.set("Error al verificar actualización")
-        root.after(5000, lambda: status_var.set(""))  # Oculta elementos después de 5 segundos
+        root.after(5000, lambda: status_var.set(""))
         frame_progreso.pack_forget()
         status_label.pack_forget()
 
-def obtener_version_actual():  # Retorna la versión actual del sistema
-    return __version__  # Importa la versión actual del sistema
+def obtener_version_actual():
+    return __version__
 
-def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):  # Crea una función para actualizar la barra de progreso durante la descarga
+def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):
     inicio = time.time()
 
-    def hook(count, block_size, total_size):  # Función hook que actualiza la GUI mientras se descarga el archivo
+    def hook(count, block_size, total_size):
         if total_size > 0:
             porcentaje = int((count * block_size * 100) / total_size)
             total = min(100, base + int(porcentaje * avance / 100))
