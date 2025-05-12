@@ -22,6 +22,7 @@ barra_progreso = None
 porcentaje_var = None
 frame_progreso = None
 status_var = None
+status_label = None
 
 PERFIL_DEFAULT = "Seleccione perfil..."
 
@@ -39,7 +40,7 @@ def construir_gui(root):
 def crear_menu(root):
     menu_bar = tk.Menu(root)
     menu_archivo = tk.Menu(menu_bar, tearoff=0)
-    menu_archivo.add_command(label="Actualizar", command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_var))
+    menu_archivo.add_command(label="Actualizar", command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var))
     menu_archivo.add_command(label="Salir", command=root.quit)
     menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
@@ -105,10 +106,9 @@ def crear_botonera(root):
     tk.Button(frame_enviar, text="Enviar Borradores", command=lanzar_envio_gui, font=("Arial", 12), bg="purple", fg="white").pack()
 
 def crear_barra_progreso(root):
-    global barra_progreso, porcentaje_var, frame_progreso, status_var
+    global barra_progreso, porcentaje_var, frame_progreso, status_var, status_label
 
-    frame_progreso = tk.Frame(root)
-    frame_progreso.pack(side="bottom", fill="x", padx=10, pady=5)
+    frame_progreso = tk.Frame(root)  # Oculto al inicio
 
     barra_progreso = ttk.Progressbar(frame_progreso, length=300, mode='determinate', maximum=100)
     barra_progreso.pack(side="left", padx=(0, 10))
@@ -117,10 +117,12 @@ def crear_barra_progreso(root):
     tk.Label(frame_progreso, textvariable=porcentaje_var).pack(side="left")
 
     status_var = tk.StringVar(value="")
-    tk.Label(root, textvariable=status_var, font=("Arial", 10), fg="blue").pack(side="bottom", pady=(0, 5))
+    status_label = tk.Label(root, textvariable=status_var, font=("Arial", 10), fg="blue")
+    status_label.pack(side="bottom", pady=(0, 5))
+    status_label.pack_forget()  # Ocultamos al iniciar
 
-def actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_var):
-    verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_var)
+def actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var):
+    verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var)
 
 def mostrar_acerca_de():
     messagebox.showinfo("Acerca de", "DraftSender - Automatización de borradores y envíos de correos.")

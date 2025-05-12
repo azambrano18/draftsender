@@ -207,3 +207,136 @@ TypeError: lanzar_envio_desde_gui() missing 1 required positional argument: 'cue
 2025-05-12 14:11 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
 2025-05-12 14:11 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
 2025-05-12 14:11 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:18 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:18 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:18 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:18 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.1
+2025-05-12 14:18 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:18 - actualizacion - WARNING - verificar_actualizacion [Línea 62] - No se encontraron archivos para descargar.
+2025-05-12 14:19 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:19 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:32 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:32 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:32 - actualizacion - INFO - verificar_actualizacion [Línea 25] - Verificando actualización...
+2025-05-12 14:32 - actualizacion - INFO - verificar_actualizacion [Línea 34] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:32 - actualizacion - INFO - verificar_actualizacion [Línea 44] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:32 - actualizacion - INFO - verificar_actualizacion [Línea 67] - Descargando draftsender.exe desde https://github.com/azambrano18/draftsender/releases/download/v1.0.0.2-beta/draftsender.exe a D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:32 - actualizacion - INFO - verificar_actualizacion [Línea 100] - Ejecución de la nueva versión: D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:32 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:33 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:33 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:33 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:33 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:33 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:33 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 25] - Verificando actualización...
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 34] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 44] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:33 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:33 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:33 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:33 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 25] - Verificando actualización...
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 34] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:33 - actualizacion - INFO - verificar_actualizacion [Línea 44] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:33 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:33 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:33 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:33 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:34 - actualizacion - INFO - verificar_actualizacion [Línea 25] - Verificando actualización...
+2025-05-12 14:34 - actualizacion - INFO - verificar_actualizacion [Línea 34] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:34 - actualizacion - INFO - verificar_actualizacion [Línea 44] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:34 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:34 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:47 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:47 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:47 - actualizacion - INFO - verificar_actualizacion [Línea 23] - Verificando actualización...
+2025-05-12 14:47 - actualizacion - INFO - verificar_actualizacion [Línea 32] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:47 - actualizacion - ERROR - verificar_actualizacion [Línea 122] - Fallo en la verificación de actualización desde https://api.github.com/repos/azambrano18/draftsender/releases/latest
+Traceback (most recent call last):
+  File "D:\draftsender\actualizacion.py", line 41, in verificar_actualizacion
+    if widget.cget("textvariable") == str(status_var):
+       ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 1828, in cget
+    return self.tk.call(self._w, 'cget', '-' + key)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: unknown option "-textvariable"
+2025-05-12 14:47 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:47 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:47 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:47 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:47 - actualizacion - INFO - verificar_actualizacion [Línea 23] - Verificando actualización...
+2025-05-12 14:47 - actualizacion - INFO - verificar_actualizacion [Línea 32] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:47 - actualizacion - ERROR - verificar_actualizacion [Línea 122] - Fallo en la verificación de actualización desde https://api.github.com/repos/azambrano18/draftsender/releases/latest
+Traceback (most recent call last):
+  File "D:\draftsender\actualizacion.py", line 41, in verificar_actualizacion
+    if widget.cget("textvariable") == str(status_var):
+       ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 1828, in cget
+    return self.tk.call(self._w, 'cget', '-' + key)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: unknown option "-textvariable"
+2025-05-12 14:47 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:47 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:48 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:48 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:48 - actualizacion - INFO - verificar_actualizacion [Línea 25] - Verificando actualización...
+2025-05-12 14:48 - actualizacion - INFO - verificar_actualizacion [Línea 34] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:48 - actualizacion - ERROR - verificar_actualizacion [Línea 120] - Fallo en la verificación de actualización desde https://api.github.com/repos/azambrano18/draftsender/releases/latest
+Traceback (most recent call last):
+  File "D:\draftsender\actualizacion.py", line 43, in verificar_actualizacion
+    if isinstance(widget, tk.Label) and widget.cget("textvariable") == str(status_var):
+                          ^^
+NameError: name 'tk' is not defined
+2025-05-12 14:48 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:48 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:49 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:49 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:49 - actualizacion - INFO - verificar_actualizacion [Línea 26] - Verificando actualización...
+2025-05-12 14:49 - actualizacion - INFO - verificar_actualizacion [Línea 35] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:49 - actualizacion - INFO - verificar_actualizacion [Línea 49] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:49 - actualizacion - INFO - verificar_actualizacion [Línea 72] - Descargando draftsender.exe desde https://github.com/azambrano18/draftsender/releases/download/v1.0.0.2-beta/draftsender.exe a D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:49 - actualizacion - INFO - verificar_actualizacion [Línea 111] - Ejecución de la nueva versión: D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:50 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:50 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:50 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:50 - actualizacion - WARNING - verificar_actualizacion [Línea 62] - No se encontraron archivos para descargar.
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:50 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:50 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:50 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:54 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:54 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:55 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:55 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:57 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:57 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:57 - actualizacion - INFO - verificar_actualizacion [Línea 23] - Verificando actualización...
+2025-05-12 14:57 - actualizacion - INFO - verificar_actualizacion [Línea 32] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:57 - actualizacion - INFO - verificar_actualizacion [Línea 40] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:57 - actualizacion - INFO - verificar_actualizacion [Línea 65] - Descargando draftsender.exe desde https://github.com/azambrano18/draftsender/releases/download/v1.0.0.2-beta/draftsender.exe a D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:58 - actualizacion - INFO - verificar_actualizacion [Línea 100] - Ejecución de la nueva versión: D:\draftsender\.venv\Scripts\draftsender_1.0.0.2-beta.exe
+2025-05-12 14:58 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:58 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:58 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:58 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:58 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:58 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:58 - actualizacion - WARNING - verificar_actualizacion [Línea 62] - No se encontraron archivos para descargar.
+2025-05-12 14:58 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:58 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:58 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:58 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:58 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:58 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:58 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión v1.0.0.2-beta
+2025-05-12 14:58 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:59 - actualizacion - INFO - verificar_actualizacion [Línea 23] - Verificando actualización...
+2025-05-12 14:59 - actualizacion - INFO - verificar_actualizacion [Línea 32] - Última versión disponible: 1.0.0.2-beta
+2025-05-12 14:59 - actualizacion - INFO - verificar_actualizacion [Línea 40] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:59 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:59 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.

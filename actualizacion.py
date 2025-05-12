@@ -1,77 +1,71 @@
-import os  # Para interactuar con el sistema de archivos
-import sys  # Para terminar el programa o acceder a su ubicación
-import json  # Para decodificar la respuesta JSON desde la API de GitHub
-import urllib.request  # Para descargar archivos desde internet
-import subprocess  # Para ejecutar la nueva versión del programa
-import time  # asegúrate que está importado al inicio
-from tkinter import messagebox  # Para mostrar mensajes en la interfaz gráfica
+import os
+import sys
+import json
+import urllib.request
+import subprocess
+import time
+import tkinter as tk
+from tkinter import messagebox
 
-from logger_utils import configurar_logger  # Logger personalizado
-from version import __version__  # Versión actual centralizada del programa
+from logger_utils import configurar_logger
+from version import __version__
 
-# Instancia del logger para este módulo
 logger = configurar_logger("actualizacion")
 
-def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, forzar=False):
+def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var, forzar=False):
     """
     Verifica si hay una nueva versión disponible del programa en GitHub.
-    Si la hay, permite al usuario descargarla y ejecutarla.
-    Args:
-        root (tk.Tk): Ventana principal de la GUI.
-        barra_progreso (tk.Progressbar): Barra de progreso de descarga.
-        porcentaje_var (tk.StringVar): Variable para mostrar el porcentaje.
-        frame_progreso (tk.Frame): Contenedor del progreso.
-        forzar (bool): Si True, descarga la versión incluso si ya está actualizada.
+    Descarga draftsender.exe si es necesario y lo ejecuta como draftsender_<versión>.exe
     """
     url_api = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
 
     try:
         logger.info("Verificando actualización...")
+        status_var.set("Verificando actualizaciones...")
+        status_label.pack(side="bottom", pady=(0, 5))
+        root.update_idletasks()
 
-        # Solicita los datos de la última release desde GitHub
         with urllib.request.urlopen(url_api) as response:
             data = json.loads(response.read())
-            ultima_version = data["tag_name"].lstrip("v")  # Quita la 'v' inicial
+            ultima_version = data["tag_name"].lstrip("v")
             assets = data["assets"]
             logger.info(f"Última versión disponible: {ultima_version}")
 
-            # Inicializa progreso visual
             barra_progreso["value"] = 0
             porcentaje_var.set("0%")
-            barra_progreso.pack(side="left", padx=(0, 10))
             frame_progreso.pack(side="bottom", fill="x", padx=10, pady=5)
             root.update_idletasks()
 
-        # Verifica si es necesario actualizar
         if forzar or ultima_version != obtener_version_actual():
             logger.info("Nueva versión detectada. Solicitando confirmación al usuario.")
 
             if messagebox.askyesno("Actualización disponible", f"Hay una nueva versión ({ultima_version}). ¿Deseas descargarla ahora?"):
                 exe_dir = os.path.dirname(sys.executable)
 
-                # Archivos esperados en la release
                 archivos = {
-                    "main.exe": "CreadorBorradores_Nuevo.exe",
-                    "txt_1.exe": "txt_1_nuevo.exe",
-                    "timer_sent.exe": "timer_sent_nuevo.exe"
+                    "draftsender.exe": f"draftsender_{ultima_version}.exe"
                 }
 
-                # Filtra los que están presentes en GitHub
                 descargas = [a for a in assets if a["name"] in archivos]
                 if not descargas:
                     logger.warning("No se encontraron archivos para descargar.")
                     messagebox.showwarning("No hay archivos", "No se encontraron archivos para actualizar.")
+                    frame_progreso.pack_forget()
+                    status_label.pack_forget()
                     return
 
                 avance = 100 // len(descargas)
                 base = 0
 
-                # Descarga cada archivo
                 for asset in descargas:
                     nombre = asset["name"]
                     url = asset["browser_download_url"]
                     destino = os.path.join(exe_dir, archivos[nombre])
+
                     logger.info(f"Descargando {nombre} desde {url} a {destino}")
+                    status_var.set(f"Descargando {nombre}...")
+                    root.update_idletasks()
+
                     try:
                         urllib.request.urlretrieve(
                             url,
@@ -81,43 +75,49 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                     except Exception as e:
                         logger.error(f"Error al descargar el archivo {nombre}: {e}")
                         messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo {nombre}. Intenta nuevamente.")
+                        frame_progreso.pack_forget()
+                        status_label.pack_forget()
                         return
+
                     base += avance
 
-                # Finaliza la descarga y lanza nueva versión
                 barra_progreso["value"] = 100
                 porcentaje_var.set("100%")
                 status_var.set("Actualización descargada y aplicada.")
                 root.update_idletasks()
 
-                # Oculta el mensaje luego de 5 segundos
                 def ocultar_mensaje():
                     try:
                         status_var.set("")
-                    except:
-                        pass
+                        frame_progreso.pack_forget()
+                        status_label.pack_forget()
+                    except Exception as e:
+                        logger.warning(f"Error al ocultar elementos: {e}")
 
                 root.after(5000, ocultar_mensaje)
 
-                frame_progreso.pack_forget()
-                logger.info("Descarga completada. Lanzando nueva versión.")
+                nuevo_path = os.path.join(exe_dir, f"draftsender_{ultima_version}.exe")
+                logger.info(f"Ejecución de la nueva versión: {nuevo_path}")
                 messagebox.showinfo("Actualización", "Se lanzará la nueva versión ahora.")
-                subprocess.Popen([os.path.join(exe_dir, "CreadorBorradores_Nuevo.exe")])
+                subprocess.Popen([nuevo_path])
                 sys.exit()
         else:
             logger.info("Ya tienes la última versión.")
+            status_var.set("Ya tienes la última versión instalada.")
+            root.after(5000, lambda: status_var.set(""))
+            frame_progreso.pack_forget()
+            status_label.pack_forget()
+
     except Exception as e:
         logger.exception(f"Fallo en la verificación de actualización desde {url_api}")
         messagebox.showerror("Error", f"No se pudo verificar actualización:\n{e}")
+        status_var.set("Error al verificar actualización")
+        root.after(5000, lambda: status_var.set(""))
+        frame_progreso.pack_forget()
+        status_label.pack_forget()
 
 def obtener_version_actual():
-    """
-    Retorna la versión actual del programa usando el valor definido en version.py.
-    Returns:
-        str: Cadena con la versión actual, ej. "1.0.1"
-    """
     return __version__
-
 
 def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):
     inicio = time.time()
@@ -134,4 +134,5 @@ def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):
             status_var.set(f"Descargando... {velocidad_kb:.1f} KB/s")
 
             root.update_idletasks()
+
     return hook
