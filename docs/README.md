@@ -13,7 +13,7 @@ Este proyecto permite la automatización del proceso de creación y envío de bo
 
 ## Requisitos
 
-- **Python 3.x**
+- **Python 3.13**
 - **Bibliotecas de Python**:
   - `win32com.client` (para interactuar con Outlook)
   - `pythoncom` (para inicializar el modelo de objetos COM de Outlook)
