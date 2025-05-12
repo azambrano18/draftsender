@@ -1,12 +1,12 @@
-import os
-import sys
+import os # Para interactuar con el sistema de archivos
+import sys # Para gestionar argumentos de línea de comando y rutas
 import tkinter as tk  # Importación de Tkinter para la interfaz gráfica
 from tkinter import ttk, messagebox  # Importación de widgets adicionales para la GUI
 import subprocess  # Para ejecutar scripts externos
 from PIL import Image, ImageTk  # Importación para trabajar con imágenes
 
 from logger_utils import configurar_logger  # Función para configurar el logger
-logger = configurar_logger("nombre_modulo")
+logger = configurar_logger("gui")
 
 from outlook_utils import obtener_perfiles_outlook, cerrar_outlook, iniciar_outlook_con_perfil, obtener_cuentas_activas
 from ejecutores import ejecutar_script
@@ -39,7 +39,8 @@ def construir_gui(root):
 
     # Menú "Archivo"
     menu_archivo = tk.Menu(menu_bar, tearoff=0)
-    menu_archivo.add_command(label="Actualizar", command=actualizar_aplicacion)
+    # Modificar esta línea
+    menu_archivo.add_command(label="Actualizar", command=verificar_actualizacion)
     menu_archivo.add_command(label="Salir", command=root.quit)
     menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
@@ -55,10 +56,10 @@ def construir_gui(root):
     try:
         base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))  # Ruta base para recursos
         img_path = os.path.join(base_path, "config", "cover_borradores.jpg")  # Ruta completa de la imagen
-        img = Image.open(img_path).resize((500, 90))  # Carga y redimensiona la imagen
+        img = Image.open(img_path).resize((500, 90))  #redimensiona la imagen
         img_tk = ImageTk.PhotoImage(img)
         label_img = tk.Label(root, image=img_tk)
-        label_img.image = img_tk  # Mantiene la referencia de la imagen
+        label_img.image = img_tk
         label_img.pack(pady=10)
     except Exception as e:
         logger.error("No se pudo cargar la imagen de portada", exc_info=True)
@@ -81,7 +82,7 @@ def construir_gui(root):
     # Inicialización de combo_cuentas_asociadas aquí
     combo_cuentas_asociadas = ttk.Combobox(root, state="readonly", font=("Arial", 10))
     combo_cuentas_asociadas.bind("<<ComboboxSelected>>", lambda e: seleccionar_cuenta_asociada())
-    combo_cuentas_asociadas.pack_forget()  # Este es el cambio, aseguramos que esté en la función
+    combo_cuentas_asociadas.pack_forget()
 
     # Inicialización de las variables de ruta (Excel y DOCX)
     ruta_excel_var = tk.StringVar()
@@ -148,9 +149,9 @@ def mostrar_cuenta_seleccionada(_event=None):
     """
     perfil = combo_cuentas.get()
     estado.cuenta_seleccionada = None
-    ruta_excel_var.set("")  # Ahora esto no da error, ya que ruta_excel_var está inicializado
-    ruta_docx_var.set("")  # Lo mismo para esta variable
-    combo_cuentas_asociadas.pack_forget()  # Asegurándonos de que esté inicializado
+    ruta_excel_var.set("")
+    ruta_docx_var.set("")
+    combo_cuentas_asociadas.pack_forget()
     combo_cuentas_asociadas.set("")
 
     if perfil == "Seleccione perfil...":
