@@ -123,7 +123,6 @@ def construir_gui(root):
     porcentaje_var = tk.StringVar(value="0%")
     tk.Label(frame_progreso, textvariable=porcentaje_var).pack(side="left")
 
-
 def actualizar_aplicacion():
     """
     Ejecuta el script de actualización (actualizacion.py) para forzar la actualización.
@@ -136,13 +135,11 @@ def actualizar_aplicacion():
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo ejecutar la actualización: {e}")
 
-
 def mostrar_acerca_de():
     """
     Muestra un mensaje con información acerca de la aplicación.
     """
     messagebox.showinfo("Acerca de", "DraftSender - Automatización de borradores y envíos de correos.")
-
 
 def mostrar_cuenta_seleccionada(_event=None):
     """
@@ -177,14 +174,12 @@ def mostrar_cuenta_seleccionada(_event=None):
         combo_cuentas_asociadas.current(0)
         combo_cuentas_asociadas.pack()
 
-
 def seleccionar_cuenta_asociada():
     """
     Función que asigna la cuenta seleccionada en el combobox de cuentas asociadas
     a la variable global 'estado.cuenta_seleccionada'.
     """
     estado.cuenta_seleccionada = combo_cuentas_asociadas.get()
-
 
 def lanzar_envio_gui():
     """
@@ -202,7 +197,6 @@ def lanzar_envio_gui():
     except Exception as e:
         logger.exception("No se pudo abrir la interfaz de envío")
         messagebox.showerror("Error", f"No se pudo abrir la interfaz de envío:\n{e}")
-
 
 # Código para inicializar la GUI
 if __name__ == "__main__":

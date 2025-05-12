@@ -7,7 +7,6 @@ from logger_utils import configurar_logger  # Función para configurar el logger
 # Configuración del logger con el nombre "main"
 logger = configurar_logger("main")
 
-
 def main():
     """
     Función principal que arranca la aplicación gráfica (GUI), configura la ventana,
@@ -51,7 +50,6 @@ def main():
     except Exception:
         # Registra cualquier excepción que ocurra durante la ejecución
         logger.exception("Ocurrió un error crítico en main.py")
-
 
 # Punto de entrada principal para ejecutar la aplicación
 if __name__ == "__main__":
