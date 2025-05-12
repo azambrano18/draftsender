@@ -102,7 +102,7 @@ def crear_botonera(root):
     tk.Button(frame_boton, text="Crear Borradores", command=lambda: ejecutar_script("crear_borradores", combo_cuentas.get()), font=("Arial", 10)).pack(side="left")
 
     frame_enviar = tk.Frame(root)
-    frame_enviar.pack(anchor="center", pady=20)
+    frame_enviar.pack(anchor="center", pady=5)
     tk.Button(frame_enviar, text="Enviar Borradores", command=lanzar_envio_gui, font=("Arial", 12), bg="purple", fg="white").pack()
 
 def crear_barra_progreso(root):

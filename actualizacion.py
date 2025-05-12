@@ -63,7 +63,6 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                     destino = os.path.join(exe_dir, archivos[nombre])
 
                     logger.info(f"Descargando {nombre} desde {url} a {destino}")
-                    status_var.set(f"Descargando {nombre}...")
                     root.update_idletasks()
 
                     try:
