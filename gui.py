@@ -190,31 +190,18 @@ def seleccionar_cuenta_asociada():
     estado.cuenta_seleccionada = combo_cuentas_asociadas.get()
 
 def lanzar_envio_gui():
-    """
-    Función que lanza el envío de borradores mediante la interfaz de envío de 'envios.py'.
-    Verifica si se ha seleccionado una cuenta antes de proceder.
-    """
     try:
         if not estado.cuenta_seleccionada:
             messagebox.showerror("Error", "Debe seleccionar una cuenta antes de enviar borradores.")
             logger.error("No se ha seleccionado una cuenta para envío.")
             return
 
-        # Determinar el directorio donde se encuentra el ejecutable empaquetado o la ejecución local
-        if getattr(sys, 'frozen', False):  # Si estamos ejecutando desde un archivo empaquetado
-            base_path = sys._MEIPASS  # Ruta temporal cuando se empaqueta con PyInstaller
-        else:
-            base_path = os.path.dirname(__file__)  # Ruta del archivo actual cuando estamos en desarrollo
-
-        # Ruta al script envios.py
-        ruta_script = os.path.join(base_path, 'envios.py')
-
-        # Ejecutar el script 'envios.py' con la cuenta seleccionada como argumento
-        subprocess.Popen([sys.executable, ruta_script, estado.cuenta_seleccionada])
+        from envios import lanzar_envio_desde_gui
+        lanzar_envio_desde_gui(estado.cuenta_seleccionada)  # ✅ pasa la cuenta seleccionada aquí
 
     except Exception as e:
-        logger.exception("No se pudo abrir la interfaz de envío")
-        messagebox.showerror("Error", f"No se pudo abrir la interfaz de envío:\n{e}")
+        logger.exception("No se pudo ejecutar el envío")
+        messagebox.showerror("Error", f"No se pudo ejecutar el envío:\n{e}")
 
 # Código para inicializar la GUI
 if __name__ == "__main__":

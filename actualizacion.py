@@ -9,7 +9,7 @@ from logger_utils import configurar_logger  # Para configurar el logger
 logger = configurar_logger("actualizacion")  # Instancia del logger para este módulo
 
 # Versión actual del programa
-__version__ = "1.0.0" # cambiar la version por cada empaquetamiento
+__version__ = "1.0.1" # cambiar la version por cada empaquetamiento
 
 def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, forzar=False):
     """
