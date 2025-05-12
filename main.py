@@ -12,7 +12,6 @@ def main():
     """
     Función principal que arranca la aplicación gráfica (GUI), configura la ventana,
     carga el ícono y gestiona la ejecución del programa.
-
     1. Configura el logger para registrar eventos importantes.
     2. Inicializa la ventana principal de la interfaz gráfica de usuario.
     3. Carga el ícono de la ventana desde la ruta configurada.
@@ -26,7 +25,7 @@ def main():
         # Inicializa la ventana principal de la GUI
         root = Tk()
         root.title("DraftSender - Automatización de Borradores y Envíos")  # Título de la ventana
-        root.geometry("480x450")  # Tamaño de la ventana
+        root.geometry("480x430")  # Tamaño de la ventana
 
         # Establecer ícono de la ventana
         try:

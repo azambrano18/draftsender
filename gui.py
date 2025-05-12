@@ -79,10 +79,8 @@ def lanzar_envio_gui():
     """
     Función que lanza el envío de borradores mediante la interfaz de envío de 'envios.py'.
     Verifica si se ha seleccionado una cuenta antes de proceder.
-
     Args:
         None
-
     Returns:
         None
     """
