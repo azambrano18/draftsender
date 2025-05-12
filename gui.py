@@ -39,8 +39,7 @@ def construir_gui(root):
 
     # Menú "Archivo"
     menu_archivo = tk.Menu(menu_bar, tearoff=0)
-    # Modificar esta línea
-    menu_archivo.add_command(label="Actualizar", command=verificar_actualizacion)
+    menu_archivo.add_command(label="Actualizar",command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso))
     menu_archivo.add_command(label="Salir", command=root.quit)
     menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
@@ -123,6 +122,12 @@ def construir_gui(root):
     barra_progreso.pack(side="left", padx=(0, 10))
     porcentaje_var = tk.StringVar(value="0%")
     tk.Label(frame_progreso, textvariable=porcentaje_var).pack(side="left")
+
+def actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso):
+    """
+    Función intermedia que llama a verificar_actualizacion con los argumentos necesarios.
+    """
+    verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso)
 
 def actualizar_aplicacion():
     """
