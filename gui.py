@@ -1,17 +1,16 @@
-import os
-import sys
-import tkinter as tk
-from tkinter import ttk, messagebox
-from PIL import Image, ImageTk
-
-from logger_utils import configurar_logger
-from outlook_utils import obtener_perfiles_outlook, cerrar_outlook, iniciar_outlook_con_perfil, obtener_cuentas_activas
-from ejecutores import ejecutar_script
-from archivos import cargar_excel, cargar_docx
-from actualizacion import verificar_actualizacion
+import os  # Para manejo de rutas del sistema operativo
+import sys  # Acceso a variables y funciones del sistema
+import tkinter as tk  # Biblioteca principal para la interfaz gráfica
+from tkinter import ttk, messagebox  # Widgets mejorados y cuadros de diálogo
+from PIL import Image, ImageTk  # Para cargar y mostrar imágenes en Tkinter
+from logger_utils import configurar_logger  # Función para iniciar el logger de eventos
+from outlook_utils import obtener_perfiles_outlook, cerrar_outlook, iniciar_outlook_con_perfil, obtener_cuentas_activas  # Funciones relacionadas a perfiles Outlook
+from ejecutores import ejecutar_script  # Ejecuta scripts personalizados
+from archivos import cargar_excel, cargar_docx  # Funciones para cargar archivos
+from actualizacion import verificar_actualizacion  # Lógica de actualización automática
 import estado
 
-logger = configurar_logger("gui")
+logger = configurar_logger("gui")  # Función para iniciar el logger de eventos
 
 combo_cuentas = None
 combo_cuentas_asociadas = None
@@ -24,9 +23,9 @@ frame_progreso = None
 status_var = None
 status_label = None
 
-PERFIL_DEFAULT = "Seleccione perfil..."
+PERFIL_DEFAULT = "Seleccione perfil..."  # Texto por defecto en selector de perfil
 
-def construir_gui(root):
+def construir_gui(root):  # Construye todos los elementos de la interfaz
     global combo_cuentas, combo_cuentas_asociadas, ruta_excel_var, ruta_docx_var, label_cuenta_var
 
     label_cuenta_var = tk.StringVar()
@@ -37,7 +36,7 @@ def construir_gui(root):
     crear_botonera(root)
     crear_barra_progreso(root)
 
-def crear_menu(root):
+def crear_menu(root):  # Crea menú Archivo y Ayuda
     menu_bar = tk.Menu(root)
     menu_archivo = tk.Menu(menu_bar, tearoff=0)
     menu_archivo.add_command(label="Actualizar", command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var))
@@ -50,21 +49,21 @@ def crear_menu(root):
 
     root.config(menu=menu_bar)
 
-def crear_encabezado(root):
+def crear_encabezado(root):  # Muestra imagen de portada
     try:
         base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
         img_path = os.path.join(base_path, "config", "cover_borradores.jpg")
         img = Image.open(img_path).resize((500, 90))
-        img_tk = ImageTk.PhotoImage(img)
+        img_tk = ImageTk.PhotoImage(img)  # Para cargar y mostrar imágenes en Tkinter
         label_img = tk.Label(root, image=img_tk)
         label_img.image = img_tk
         label_img.pack(pady=10)
     except Exception as e:
         logger.error("No se pudo cargar la imagen de portada", exc_info=True)
 
-def crear_selector_perfil(root):
+def crear_selector_perfil(root):  # Selector de perfil Outlook y cuenta asociada
     global combo_cuentas, combo_cuentas_asociadas
-    perfiles = obtener_perfiles_outlook()
+    perfiles = obtener_perfiles_outlook()  # Funciones relacionadas a perfiles Outlook
     max_length = max(len(p) for p in perfiles)
     tk.Label(root, text="Selecciona un perfil:", font=("Arial", 10, "bold")).pack(anchor="w", padx=10)
 
@@ -81,14 +80,14 @@ def crear_selector_perfil(root):
     combo_cuentas_asociadas.bind("<<ComboboxSelected>>", lambda e: seleccionar_cuenta_asociada())
     combo_cuentas_asociadas.pack_forget()
 
-def crear_cargadores_archivos(root):
+def crear_cargadores_archivos(root):  # Botones para cargar Excel y DOCX
     global ruta_excel_var, ruta_docx_var
     ruta_excel_var = tk.StringVar()
     ruta_docx_var = tk.StringVar()
 
     frame_excel = tk.Frame(root)
     frame_excel.pack(anchor="w", padx=10, pady=5)
-    tk.Button(frame_excel, text="Cargar Excel", command=lambda: cargar_excel(ruta_excel_var), font=("Arial", 10)).pack(side="left")
+    tk.Button(frame_excel, text="Cargar Excel", command=lambda: cargar_excel(ruta_excel_var), font=("Arial", 10)).pack(side="left")  # Funciones para cargar archivos
     tk.Label(frame_excel, textvariable=ruta_excel_var, fg="green").pack(side="left", padx=10)
 
     frame_docx = tk.Frame(root)
@@ -96,16 +95,16 @@ def crear_cargadores_archivos(root):
     tk.Button(frame_docx, text="Cargar Texto Mail", command=lambda: cargar_docx(ruta_docx_var), font=("Arial", 10)).pack(side="left")
     tk.Label(frame_docx, textvariable=ruta_docx_var, fg="green").pack(side="left", padx=10)
 
-def crear_botonera(root):
+def crear_botonera(root):  # Botones para crear y enviar borradores
     frame_boton = tk.Frame(root)
     frame_boton.pack(anchor="w", padx=10, pady=5)
-    tk.Button(frame_boton, text="Crear Borradores", command=lambda: ejecutar_script("crear_borradores", combo_cuentas.get()), font=("Arial", 10)).pack(side="left")
+    tk.Button(frame_boton, text="Crear Borradores", command=lambda: ejecutar_script("crear_borradores", combo_cuentas.get()), font=("Arial", 10)).pack(side="left")  # Ejecuta scripts personalizados
 
     frame_enviar = tk.Frame(root)
     frame_enviar.pack(anchor="center", pady=5)
     tk.Button(frame_enviar, text="Enviar Borradores", command=lanzar_envio_gui, font=("Arial", 12), bg="purple", fg="white").pack()
 
-def crear_barra_progreso(root):
+def crear_barra_progreso(root):  # Barra de progreso y estado
     global barra_progreso, porcentaje_var, frame_progreso, status_var, status_label
 
     frame_progreso = tk.Frame(root)  # Oculto al inicio
@@ -121,13 +120,13 @@ def crear_barra_progreso(root):
     status_label.pack(side="bottom", pady=(0, 5))
     status_label.pack_forget()  # Ocultamos al iniciar
 
-def actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var):
-    verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var)
+def actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var):  # Llama a la función de actualización
+    verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, status_label, status_var)  # Lógica de actualización automática
 
-def mostrar_acerca_de():
+def mostrar_acerca_de():  # Muestra información del programa
     messagebox.showinfo("Acerca de", "DraftSender - Automatización de borradores y envíos de correos.")
 
-def mostrar_cuenta_seleccionada(_event=None):
+def mostrar_cuenta_seleccionada(_event=None):  # Detecta y muestra cuentas activas del perfil seleccionado
     perfil = combo_cuentas.get()
     estado.cuenta_seleccionada = None
     ruta_excel_var.set("")
@@ -157,10 +156,10 @@ def mostrar_cuenta_seleccionada(_event=None):
         combo_cuentas_asociadas.pack()
         logger.info(f"Cuenta seleccionada: {estado.cuenta_seleccionada}")
 
-def seleccionar_cuenta_asociada():
+def seleccionar_cuenta_asociada():  # Guarda cuenta asociada seleccionada por el usuario
     estado.cuenta_seleccionada = combo_cuentas_asociadas.get()
 
-def lanzar_envio_gui():
+def lanzar_envio_gui():  # Ejecuta proceso de envío de correos
     if not estado.cuenta_seleccionada:
         messagebox.showerror("Error", "Debe seleccionar una cuenta antes de enviar borradores.")
         logger.error("No se ha seleccionado una cuenta para envío.")
@@ -170,7 +169,7 @@ def lanzar_envio_gui():
     lanzar_envio_desde_gui(estado.cuenta_seleccionada)
 
 # Inicialización directa (solo si se ejecuta este archivo)
-if __name__ == "__main__":
+if __name__ == "__main__":  # Punto de entrada si se ejecuta directamente
     root = tk.Tk()
     root.title("DraftSender - Automatización de Borradores y Envíos")
     root.geometry("480x450")

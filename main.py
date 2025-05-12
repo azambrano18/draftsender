@@ -41,7 +41,7 @@ def main():
         # Crea la ventana principal
         root = Tk()
         root.title("DraftSender - Automatización de Borradores y Envíos")
-        root.geometry("480x450")
+        root.geometry("480x440")
 
         # Carga el ícono de la aplicación
         cargar_icono_ventana(root)
