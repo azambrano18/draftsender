@@ -1,8 +1,9 @@
-import os # Para interactuar con el sistema de archivos
-import sys # Para gestionar argumentos de línea de comando y rutas
+import os  # Para interactuar con el sistema de archivos
+import sys  # Para gestionar argumentos de línea de comando y rutas
 import tkinter as tk  # Importación de Tkinter para la interfaz gráfica
 from tkinter import ttk, messagebox  # Importación de widgets adicionales para la GUI
 import subprocess  # Para ejecutar scripts externos
+import runpy  # Para ejecutar scripts Python directamente
 from PIL import Image, ImageTk  # Importación para trabajar con imágenes
 
 from logger_utils import configurar_logger  # Función para configurar el logger
@@ -39,7 +40,7 @@ def construir_gui(root):
 
     # Menú "Archivo"
     menu_archivo = tk.Menu(menu_bar, tearoff=0)
-    menu_archivo.add_command(label="Actualizar",command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso))
+    menu_archivo.add_command(label="Actualizar", command=lambda: actualizar_aplicacion_intermedia(root, barra_progreso, porcentaje_var, frame_progreso))
     menu_archivo.add_command(label="Salir", command=root.quit)
     menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
@@ -55,7 +56,7 @@ def construir_gui(root):
     try:
         base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))  # Ruta base para recursos
         img_path = os.path.join(base_path, "config", "cover_borradores.jpg")  # Ruta completa de la imagen
-        img = Image.open(img_path).resize((500, 90))  #redimensiona la imagen
+        img = Image.open(img_path).resize((500, 90))  # Redimensiona la imagen
         img_tk = ImageTk.PhotoImage(img)
         label_img = tk.Label(root, image=img_tk)
         label_img.image = img_tk
@@ -179,6 +180,7 @@ def mostrar_cuenta_seleccionada(_event=None):
         combo_cuentas_asociadas['values'] = cuentas
         combo_cuentas_asociadas.current(0)
         combo_cuentas_asociadas.pack()
+        logger.info(f"Cuenta seleccionada: {estado.cuenta_seleccionada}")
 
 def seleccionar_cuenta_asociada():
     """
@@ -198,8 +200,18 @@ def lanzar_envio_gui():
             logger.error("No se ha seleccionado una cuenta para envío.")
             return
 
-        ruta_script = os.path.join(os.path.dirname(__file__), "envios.py")
-        subprocess.Popen([sys.executable, ruta_script, estado.cuenta_seleccionada])  # Ejecuta el script de envíos
+        # Determinar el directorio donde se encuentra el ejecutable empaquetado o la ejecución local
+        if getattr(sys, 'frozen', False):  # Si estamos ejecutando desde un archivo empaquetado
+            base_path = sys._MEIPASS  # Ruta temporal cuando se empaqueta con PyInstaller
+        else:
+            base_path = os.path.dirname(__file__)  # Ruta del archivo actual cuando estamos en desarrollo
+
+        # Ruta al script envios.py
+        ruta_script = os.path.join(base_path, 'envios.py')
+
+        # Ejecutar el script 'envios.py' con la cuenta seleccionada como argumento
+        subprocess.Popen([sys.executable, ruta_script, estado.cuenta_seleccionada])
+
     except Exception as e:
         logger.exception("No se pudo abrir la interfaz de envío")
         messagebox.showerror("Error", f"No se pudo abrir la interfaz de envío:\n{e}")

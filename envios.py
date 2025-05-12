@@ -8,31 +8,28 @@ import sys  # Para gestionar argumentos de línea de comando y rutas
 import os  # Para interactuar con el sistema de archivos
 
 from logger_utils import configurar_logger  # Para configurar el logger
-
 logger = configurar_logger("envios")  # Instancia del logger para este módulo
 
-# Evento global utilizado para controlar el proceso de envío
-enviar_event = threading.Event()
-cuenta_seleccionada = sys.argv[1] if len(
-    sys.argv) > 1 else ""  # Obtiene la cuenta seleccionada desde los argumentos de línea de comando
-logger.info(f"Cuenta seleccionada: {cuenta_seleccionada}")
+# Obtener la cuenta seleccionada desde los argumentos de la línea de comando
+if len(sys.argv) > 1:
+    cuenta_seleccionada = sys.argv[1]  # Recibe la cuenta seleccionada desde los argumentos de la línea de comando
+else:
+    cuenta_seleccionada = ""  # Si no se pasa ningún argumento, la cuenta será vacía
 
+# Registra la cuenta seleccionada en el log
+logger.info(f"Cuenta seleccionada: {cuenta_seleccionada}")
 
 def obtener_carpeta_borradores(namespace, cuenta_smtp):
     """
     Busca la carpeta de borradores en la cuenta de Outlook proporcionada.
-
     Args:
         namespace: Espacio de nombres de Outlook.
         cuenta_smtp (str): Dirección de correo de la cuenta a buscar.
-
     Returns:
         folder: Carpeta de borradores de la cuenta de Outlook.
-
     Raises:
         RuntimeError: Si no se encuentra la carpeta de borradores o la cuenta.
     """
-
     def buscar_recursivo(folder):
         for subfolder in folder.Folders:
             if subfolder.Name in ["Borradores", "Drafts"]:
@@ -55,14 +52,11 @@ def obtener_carpeta_borradores(namespace, cuenta_smtp):
                 raise RuntimeError(f"No se pudo acceder a la carpeta raíz de la cuenta {cuenta_smtp}: {e}")
     raise RuntimeError(f"No se encontró la cuenta en Outlook: {cuenta_smtp}")
 
-
 def contar_borradores(cuenta):
     """
     Cuenta el número de borradores en la carpeta de borradores de la cuenta seleccionada.
-
     Args:
         cuenta (str): Dirección de correo de la cuenta.
-
     Returns:
         int: Número de borradores en la carpeta de borradores.
     """
@@ -83,14 +77,11 @@ def contar_borradores(cuenta):
     finally:
         pythoncom.CoUninitialize()
 
-
 def validar_intervalo():
     """
     Valida el intervalo de envío seleccionado en la interfaz gráfica.
-
     Si el intervalo es válido (un número), habilita el botón para iniciar el envío.
     Si el intervalo es inválido, deshabilita el botón de inicio.
-
     Returns:
         None
     """
@@ -100,14 +91,11 @@ def validar_intervalo():
     else:
         start_button.config(state="normal")
 
-
 def actualizar_contador(event=None):
     """
     Actualiza el contador de borradores y el tiempo estimado basado en el intervalo seleccionado.
-
     Args:
         event: Evento opcional que puede ser usado para disparar la actualización.
-
     Returns:
         None
     """
@@ -131,18 +119,14 @@ def actualizar_contador(event=None):
     else:
         estimado_label.config(text="Tiempo restante: 00:00:00")
 
-
 def iniciar_temporizador_dinamico(tiempo_total):
     """
     Inicia un temporizador dinámico que actualiza la interfaz con el tiempo restante.
-
     Args:
         tiempo_total (int): Tiempo total estimado para el envío en segundos.
-
     Returns:
         None
     """
-
     def actualizar_reloj():
         nonlocal tiempo_total
         if tiempo_total <= 0 or not enviar_event.is_set():
@@ -156,15 +140,12 @@ def iniciar_temporizador_dinamico(tiempo_total):
 
     actualizar_reloj()
 
-
 def enviar_borradores(cuenta, status_label):
     """
     Envía los borradores de la cuenta seleccionada con un intervalo definido.
-
     Args:
         cuenta (str): Dirección de correo de la cuenta de Outlook.
         status_label (tk.Label): Etiqueta de la interfaz que muestra el estado del envío.
-
     Returns:
         None
     """
@@ -216,13 +197,10 @@ def enviar_borradores(cuenta, status_label):
         enviar_event.clear()
         pythoncom.CoUninitialize()
 
-
 def iniciar_envio():
     """
     Inicia el proceso de envío de borradores en segundo plano.
-
     Calcula el tiempo total necesario para el envío y lanza los hilos para el temporizador y el envío.
-
     Returns:
         None
     """
@@ -234,13 +212,10 @@ def iniciar_envio():
         threading.Thread(target=lambda: iniciar_temporizador_dinamico(tiempo_total), daemon=True).start()
         threading.Thread(target=enviar_borradores, args=(cuenta_seleccionada, status_label), daemon=True).start()
 
-
 def detener_envio():
     """
     Detiene el proceso de envío de borradores.
-
     Cancela el evento de envío y actualiza la interfaz con el estado detenido.
-
     Returns:
         None
     """
@@ -248,7 +223,6 @@ def detener_envio():
     status_label.config(text="Envío detenido")
     estimado_label.config(text="Tiempo restante: --")
     logger.info("Envío detenido manualmente.")
-
 
 # EJECUCIÓN SOLO SI ES LLAMADO DIRECTAMENTE
 if __name__ == "__main__":
