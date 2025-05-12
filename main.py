@@ -1,55 +1,66 @@
-import os
-import sys
-from tkinter import Tk  # Importación de Tkinter para la interfaz gráfica
-from gui import construir_gui  # Función para construir la interfaz gráfica
-from logger_utils import configurar_logger  # Función para configurar el logger
+import os  # Para manejar rutas de archivos
+import sys  # Para acceder a argumentos y entorno del sistema
+import atexit  # Para registrar funciones que se ejecuten al cerrar el programa
+from tkinter import Tk  # Tkinter para crear la interfaz gráfica
+from gui import construir_gui  # Función que construye la GUI principal
+from logger_utils import configurar_logger  # Configuración del sistema de logging
+from version import __version__  # Versión actual del programa, centralizada en version.py
 
-# Configuración del logger con el nombre "main"
+# Configura el logger para el módulo main
 logger = configurar_logger("main")
+
+def cargar_icono_ventana(root):
+    """
+    Intenta cargar y aplicar el ícono de la ventana principal desde el directorio 'config'.
+    Args:
+        root (Tk): La ventana principal de la interfaz gráfica.
+    """
+    try:
+        # Obtiene la ruta base donde está el ícono, compatible con PyInstaller
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        icon_path = os.path.join(base_path, "config", "icono.ico")
+        root.iconbitmap(icon_path)  # Aplica el ícono a la ventana
+        logger.info("Ícono cargado correctamente")
+    except Exception as e:
+        logger.warning(f"No se pudo cargar el icono: {e}")
 
 def main():
     """
-    Función principal que arranca la aplicación gráfica (GUI), configura la ventana,
-    carga el ícono y gestiona la ejecución del programa.
-    1. Configura el logger para registrar eventos importantes.
-    2. Inicializa la ventana principal de la interfaz gráfica de usuario.
-    3. Carga el ícono de la ventana desde la ruta configurada.
-    4. Llama a la función `construir_gui()` para construir la interfaz con Tkinter.
-    5. Maneja excepciones y errores críticos durante la ejecución.
+    Punto de entrada de la aplicación.
+    - Inicializa el logger.
+    - Crea la ventana principal (Tkinter).
+    - Carga el ícono.
+    - Construye la interfaz gráfica llamando a `construir_gui`.
+    - Ejecuta el loop principal de la GUI.
+    - Registra eventos y errores importantes.
     """
     try:
-        # Inicia el log para indicar que la aplicación ha comenzado
-        logger.info("Iniciando DraftSender GUI")
+        # Log de inicio con la versión del sistema
+        logger.info(f"Iniciando DraftSender GUI - Versión {__version__}")
 
-        # Inicializa la ventana principal de la GUI
+        # Crea la ventana principal
         root = Tk()
-        root.title("DraftSender - Automatización de Borradores y Envíos")  # Título de la ventana
-        root.geometry("480x450")  # Tamaño de la ventana
+        root.title("DraftSender - Automatización de Borradores y Envíos")
+        root.geometry("480x450")
 
-        # Establecer ícono de la ventana
-        try:
-            # Obtiene la ruta base y define la ruta del ícono
-            base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-            icon_path = os.path.join(base_path, "config", "icono.ico")
-            root.iconbitmap(icon_path)  # Establece el ícono de la ventana
-            logger.info("Ícono cargado correctamente")
-        except Exception as e:
-            # Si no se puede cargar el ícono, se registra una advertencia
-            logger.warning(f"No se pudo cargar el icono: {e}")
+        # Carga el ícono de la aplicación
+        cargar_icono_ventana(root)
 
-        # Llama a la función para construir la interfaz de usuario
+        # Construye toda la interfaz gráfica (botones, menús, campos, etc.)
         construir_gui(root)
 
-        # Ejecuta el ciclo principal de la GUI
+        # Inicia el bucle principal de eventos (ventana visible)
         root.mainloop()
 
-        # Al finalizar la aplicación, registra que se cerró correctamente
+        # Log de cierre normal
         logger.info("Aplicación finalizada correctamente")
-
     except Exception:
-        # Registra cualquier excepción que ocurra durante la ejecución
+        # Log de cualquier error inesperado en tiempo de ejecución
         logger.exception("Ocurrió un error crítico en main.py")
 
-# Punto de entrada principal para ejecutar la aplicación
+# Registra una acción al cerrar la app: dejar constancia en el log
+atexit.register(lambda: logger.info("Aplicación cerrada correctamente."))
+
+# Ejecuta la función main si este archivo se ejecuta directamente
 if __name__ == "__main__":
     main()

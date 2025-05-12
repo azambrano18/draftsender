@@ -127,3 +127,83 @@ TypeError: lanzar_envio_desde_gui() missing 1 required positional argument: 'cue
 2025-05-12 12:50 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
 2025-05-12 12:50 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
 2025-05-12 12:50 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 13:26 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.1
+2025-05-12 13:26 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:26 - actualizacion - INFO - verificar_actualizacion [Línea 28] - Verificando actualización...
+2025-05-12 13:26 - actualizacion - INFO - verificar_actualizacion [Línea 35] - Última versión disponible: 1.0.0.1
+2025-05-12 13:26 - actualizacion - INFO - verificar_actualizacion [Línea 46] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 13:26 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:26 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:31 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:31 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:31 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 13:31 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 13:31 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 13:31 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 13:33 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:33 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:33 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:33 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:33 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 13:33 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 13:33 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 13:33 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 13:34 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:34 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:34 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:34 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:34 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 13:34 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 13:35 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 13:35 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 13:36 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:36 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:36 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:36 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:36 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 13:36 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 13:36 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 13:36 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 13:36 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:36 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:37 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:37 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:37 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:37 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:37 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:37 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:37 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 13:37 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 13:37 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 13:37 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 13:38 - archivos - INFO - cargar_excel [Línea 27] - Archivo Excel cargado: D:/Usuarios/Work/Desktop/app_beta/formato.xlsm
+2025-05-12 13:38 - archivos - INFO - cargar_docx [Línea 68] - Archivo Word cargado: D:/Usuarios/Work/Desktop/app_beta/txt_3.docx
+2025-05-12 13:38 - borradores - INFO - generar_borradores [Línea 109] - Se generaron 2 borradores.
+2025-05-12 13:38 - ejecutores - INFO - ejecutar_script [Línea 58] - 2 borradores creados correctamente.
+2025-05-12 13:38 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:38 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 13:51 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 13:51 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 13:51 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 13:51 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:04 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 14:04 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:04 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:04 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.1
+2025-05-12 14:04 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:04 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:04 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:05 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 14:05 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:05 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:05 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.1
+2025-05-12 14:05 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:06 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:06 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
+2025-05-12 14:11 - main - INFO - main [Línea 39] - Iniciando DraftSender GUI - Versión 1.0.0.2
+2025-05-12 14:11 - main - INFO - cargar_icono_ventana [Línea 23] - Ícono cargado correctamente
+2025-05-12 14:11 - actualizacion - INFO - verificar_actualizacion [Línea 29] - Verificando actualización...
+2025-05-12 14:11 - actualizacion - INFO - verificar_actualizacion [Línea 36] - Última versión disponible: 1.0.0.1
+2025-05-12 14:11 - actualizacion - INFO - verificar_actualizacion [Línea 47] - Nueva versión detectada. Solicitando confirmación al usuario.
+2025-05-12 14:11 - main - INFO - main [Línea 56] - Aplicación finalizada correctamente
+2025-05-12 14:11 - main - INFO - <lambda> [Línea 62] - Aplicación cerrada correctamente.
