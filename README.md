@@ -28,8 +28,8 @@ Este proyecto permite la automatización del proceso de creación y envío de bo
 
 1. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/tu_usuario/crea_borradores.git
-   cd crea_borradores
+   git clone https://github.com//azambrano18/draftsender.git
+   cd draftsender
    ```
 
 2. **Instalar dependencias**:
