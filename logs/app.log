@@ -1,0 +1,66 @@
+2025-05-12 11:12 - envios - INFO - <module> [Línea 20] - Cuenta seleccionada: 
+2025-05-12 11:12 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:12 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:12 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:12 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:12 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:12 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:12 - envios - INFO - <module> [Línea 20] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:13 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:16 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 11:16 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:16 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:16 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:16 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:16 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:16 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:16 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:17 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:18 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: 
+2025-05-12 11:18 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:18 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:18 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:18 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:18 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:18 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:18 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:21 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:24 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: 
+2025-05-12 11:24 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:24 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:24 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:24 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:24 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:24 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:24 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:25 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:31 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: 
+2025-05-12 11:31 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:31 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:31 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:31 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:31 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:31 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:31 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:32 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:38 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: 
+2025-05-12 11:38 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:38 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:38 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:38 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:38 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:38 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:38 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:39 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:40 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente
+2025-05-12 11:41 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: 
+2025-05-12 11:41 - main - INFO - main [Línea 22] - Iniciando DraftSender GUI
+2025-05-12 11:41 - main - INFO - main [Línea 35] - Ícono cargado correctamente
+2025-05-12 11:41 - outlook_utils - INFO - cerrar_outlook [Línea 53] - Outlook cerrado correctamente.
+2025-05-12 11:41 - outlook_utils - INFO - obtener_ruta_outlook [Línea 70] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 11:41 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 86] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 11:41 - outlook_utils - INFO - obtener_cuentas_activas [Línea 105] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 11:41 - envios - INFO - <module> [Línea 21] - Cuenta seleccionada: azambrano@mejoreferido.cl
+2025-05-12 11:42 - envios - INFO - detener_envio [Línea 237] - Envío detenido manualmente.
+2025-05-12 11:43 - envios - INFO - detener_envio [Línea 237] - Envío detenido manualmente.
+2025-05-12 11:43 - main - INFO - main [Línea 47] - Aplicación finalizada correctamente

@@ -14,14 +14,12 @@ __version__ = "1.0.0" # cambiar la version por cada empaquetamiento
 def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, forzar=False):
     """
     Verifica si hay una nueva versión disponible del programa en GitHub. Si la hay, permite al usuario descargarla e instalarla.
-
     Args:
         root (tk.Tk): La ventana principal de la aplicación.
         barra_progreso (tk.Progressbar): Barra de progreso para mostrar el avance de la descarga.
         porcentaje_var (tk.StringVar): Variable que contiene el porcentaje de progreso.
         frame_progreso (tk.Frame): Marco que contiene la barra de progreso.
         forzar (bool): Si se establece como True, forzará la descarga de la actualización incluso si ya está en la última versión.
-
     Returns:
         None
     """
@@ -98,7 +96,6 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
 def obtener_version_actual():
     """
     Obtiene la versión actual del programa desde el archivo `main.py`.
-
     Returns:
         str: La versión actual del programa.
     """
@@ -112,14 +109,12 @@ def obtener_version_actual():
 def crear_hook(base, avance, barra_progreso, porcentaje_var, root):
     """
     Crea un hook para la descarga de archivos que actualiza la barra de progreso.
-
     Args:
         base (int): La base del progreso total.
         avance (int): El porcentaje de avance por archivo.
         barra_progreso (tk.Progressbar): Barra de progreso para mostrar el avance de la descarga.
         porcentaje_var (tk.StringVar): Variable de texto para mostrar el porcentaje.
         root (tk.Tk): Ventana principal de la aplicación.
-
     Returns:
         function: Una función de hook que se usa durante la descarga.
     """

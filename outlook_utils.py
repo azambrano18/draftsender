@@ -11,10 +11,8 @@ logger = configurar_logger("outlook_utils")  # Instancia del logger para este m�
 def obtener_perfiles_outlook():
     """
     Obtiene los perfiles de Outlook configurados en el sistema desde el registro de Windows.
-
     La función busca en diferentes versiones de Outlook (16.0, 15.0, 14.0) y extrae los nombres de los perfiles
     configurados en el sistema.
-
     Returns:
         list: Lista de perfiles encontrados (incluye la opción "Seleccione perfil..." al principio).
     """
@@ -47,11 +45,8 @@ def obtener_perfiles_outlook():
 def cerrar_outlook():
     """
     Cierra la aplicación de Outlook si está en ejecución.
-
     Utiliza un comando del sistema para finalizar el proceso de Outlook.
-
-    Returns:
-        None
+    Returns: None
     """
     try:
         subprocess.run("taskkill /F /IM outlook.exe", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -62,11 +57,8 @@ def cerrar_outlook():
 def obtener_ruta_outlook():
     """
     Obtiene la ruta de instalación de Outlook en el sistema.
-
     Busca en diferentes rutas posibles dependiendo de la instalación de Microsoft Office.
-
-    Returns:
-        str: Ruta de la instalación de Outlook.
+    Returns: str: Ruta de la instalación de Outlook.
     """
     rutas = [
         r"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE",
@@ -83,14 +75,9 @@ def obtener_ruta_outlook():
 def iniciar_outlook_con_perfil(perfil: str):
     """
     Inicia Outlook con el perfil especificado.
-
     Llama a la ruta de Outlook y le pasa el perfil seleccionado para iniciar la aplicación.
-
-    Args:
-        perfil (str): Nombre del perfil de Outlook a usar.
-
-    Returns:
-        None
+    Args: perfil (str): Nombre del perfil de Outlook a usar.
+    Returns: None
     """
     try:
         ruta_outlook = obtener_ruta_outlook()  # Obtiene la ruta de instalación de Outlook
@@ -103,15 +90,9 @@ def iniciar_outlook_con_perfil(perfil: str):
 def obtener_cuentas_activas(max_intentos: int = 10, intervalo: int = 1):
     """
     Obtiene las cuentas activas de Outlook.
-
     Utiliza la interfaz COM de Outlook para acceder a las cuentas configuradas en el perfil activo.
-
-    Args:
-        max_intentos (int): Número máximo de intentos para obtener las cuentas.
-        intervalo (int): Intervalo de tiempo (en segundos) entre intentos.
-
-    Returns:
-        list: Lista de direcciones SMTP de las cuentas activas en Outlook.
+    Args: max_intentos (int): Número máximo de intentos para obtener las cuentas. intervalo (int): Intervalo de tiempo (en segundos) entre intentos.
+    Returns: list: Lista de direcciones SMTP de las cuentas activas en Outlook.
     """
     pythoncom.CoInitialize()  # Inicializa el modelo COM
     try:

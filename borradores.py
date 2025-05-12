@@ -9,13 +9,9 @@ logger = configurar_logger("borradores")  # Instancia del logger para este módu
 def cargar_cuerpo_desde_docx(archivo_docx: str, variables: dict) -> str:
     """
     Carga el contenido de un archivo DOCX y reemplaza las variables en el cuerpo del texto con los valores proporcionados.
-
-    Args:
-        archivo_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
-        variables (dict): Diccionario con las variables a reemplazar en el texto.
-
-    Returns:
-        str: El contenido del cuerpo del correo en formato HTML.
+    Args: archivo_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
+    variables (dict): Diccionario con las variables a reemplazar en el texto.
+    Returns: str: El contenido del cuerpo del correo en formato HTML.
     """
     if not os.path.exists(archivo_docx):
         raise FileNotFoundError(f"El archivo '{archivo_docx}' no existe.")  # Verifica si el archivo existe
@@ -34,20 +30,16 @@ def cargar_cuerpo_desde_docx(archivo_docx: str, variables: dict) -> str:
     cuerpo = f'<div style="font-family: Calibri, sans-serif; font-size: 11pt;">{cuerpo}</div>'
     return cuerpo
 
-
 def crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook=""):
     """
     Crea un borrador de correo en Outlook.
-
     Args:
         cuenta (str): Dirección de correo desde la cual se enviará el mensaje.
         destinatario (str): Dirección de correo del destinatario.
         asunto (str): Asunto del correo.
         cuerpo_html (str): Cuerpo del correo en formato HTML.
         perfil_outlook (str, opcional): Perfil de Outlook a usar. Si no se proporciona, se usará el perfil por defecto.
-
-    Returns:
-        None
+    Returns: None
     """
     # Conecta con Outlook mediante COM
     outlook = win32com.client.Dispatch("Outlook.Application")
@@ -81,13 +73,11 @@ def crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook="")
 def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str) -> int:
     """
     Genera borradores de correos electrónicos a partir de un archivo Excel y un archivo DOCX.
-
     Args:
         cuenta (str): Dirección de correo desde la cual se enviarán los mensajes.
         perfil (str): Perfil de Outlook a usar.
         ruta_excel (str): Ruta del archivo Excel con los destinatarios y asuntos.
         ruta_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
-
     Returns:
         int: Número de borradores generados.
     """

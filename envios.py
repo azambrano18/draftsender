@@ -1,11 +1,12 @@
 import win32com.client  # Para interactuar con Outlook mediante COM
 import pythoncom  # Para inicializar y liberar el modelo de objetos COM
 import time  # Para gestionar los intervalos de espera
-import tkinter as tk  # Para la interfaz gráfica
-from tkinter import ttk, messagebox  # Para crear widgets y mostrar cuadros de mensaje
 import threading  # Para ejecutar tareas en segundo plano
 import sys  # Para gestionar argumentos de línea de comando y rutas
 import os  # Para interactuar con el sistema de archivos
+
+import tkinter as tk  # Para la interfaz gráfica
+from tkinter import ttk, messagebox  # Para crear widgets y mostrar cuadros de mensaje
 
 from logger_utils import configurar_logger  # Para configurar el logger
 logger = configurar_logger("envios")  # Instancia del logger para este módulo
@@ -19,6 +20,76 @@ else:
 # Registra la cuenta seleccionada en el log
 logger.info(f"Cuenta seleccionada: {cuenta_seleccionada}")
 
+# Evento global utilizado para controlar el proceso de envío
+enviar_event = threading.Event()
+
+# Función para actualizar el contador (intervalo)
+def actualizar_contador(event=None):
+    """
+    Actualiza el contador de borradores y el tiempo estimado basado en el intervalo seleccionado.
+    Args:
+        event: Evento opcional que puede ser usado para disparar la actualización.
+    Returns:
+        None
+    """
+    intervalo_str = combo_intervalo.get()
+    if intervalo_str == "Seleccione intervalo." or not intervalo_str.isdigit():
+        intervalo = 15
+    else:
+        intervalo = int(intervalo_str)
+
+    combo_intervalo.set(str(intervalo))  # Actualiza el valor en el combo
+    validar_intervalo()  # Valida el intervalo
+
+    total_borradores = contar_borradores(cuenta_seleccionada)
+    status_label.config(text=f"Borradores restantes: {total_borradores} | Enviados: 0")
+
+    if total_borradores > 0:
+        tiempo_total = intervalo * total_borradores
+        horas, resto = divmod(tiempo_total, 3600)
+        minutos, segundos = divmod(resto, 60)
+        estimado_label.config(text=f"Tiempo total estimado: {horas:02}:{minutos:02}:{segundos:02}")
+    else:
+        estimado_label.config(text="Tiempo restante: 00:00:00")
+
+# Función para validar el intervalo
+def validar_intervalo():
+    """
+    Valida el intervalo de envío seleccionado en la interfaz gráfica.
+    Si el intervalo es válido (un número), habilita el botón para iniciar el envío.
+    Si el intervalo es inválido, deshabilita el botón de inicio.
+    Returns:
+        None
+    """
+    intervalo_str = combo_intervalo.get()
+    if intervalo_str == "Seleccione intervalo." or not intervalo_str.isdigit():
+        start_button.config(state="disabled")
+    else:
+        start_button.config(state="normal")
+
+# Función para iniciar el temporizador dinámico
+def iniciar_temporizador_dinamico(tiempo_total):
+    """
+    Inicia un temporizador dinámico que actualiza la interfaz con el tiempo restante.
+    Args:
+        tiempo_total (int): Tiempo total estimado para el envío en segundos.
+    Returns:
+        None
+    """
+    def actualizar_reloj():
+        nonlocal tiempo_total
+        if tiempo_total <= 0 or not enviar_event.is_set():
+            estimado_label.config(text="Tiempo restante: 00:00:00")
+            return
+        horas, resto = divmod(tiempo_total, 3600)
+        minutos, segundos = divmod(resto, 60)
+        estimado_label.config(text=f"Tiempo restante: {horas:02}:{minutos:02}:{segundos:02}")
+        tiempo_total -= 1
+        root.after(1000, actualizar_reloj)
+
+    actualizar_reloj()
+
+# Función para obtener la carpeta de borradores en Outlook
 def obtener_carpeta_borradores(namespace, cuenta_smtp):
     """
     Busca la carpeta de borradores en la cuenta de Outlook proporcionada.
@@ -52,6 +123,7 @@ def obtener_carpeta_borradores(namespace, cuenta_smtp):
                 raise RuntimeError(f"No se pudo acceder a la carpeta raíz de la cuenta {cuenta_smtp}: {e}")
     raise RuntimeError(f"No se encontró la cuenta en Outlook: {cuenta_smtp}")
 
+# Función para contar los borradores
 def contar_borradores(cuenta):
     """
     Cuenta el número de borradores en la carpeta de borradores de la cuenta seleccionada.
@@ -77,69 +149,7 @@ def contar_borradores(cuenta):
     finally:
         pythoncom.CoUninitialize()
 
-def validar_intervalo():
-    """
-    Valida el intervalo de envío seleccionado en la interfaz gráfica.
-    Si el intervalo es válido (un número), habilita el botón para iniciar el envío.
-    Si el intervalo es inválido, deshabilita el botón de inicio.
-    Returns:
-        None
-    """
-    intervalo_str = combo_intervalo.get()
-    if intervalo_str == "Seleccione intervalo." or not intervalo_str.isdigit():
-        start_button.config(state="disabled")
-    else:
-        start_button.config(state="normal")
-
-def actualizar_contador(event=None):
-    """
-    Actualiza el contador de borradores y el tiempo estimado basado en el intervalo seleccionado.
-    Args:
-        event: Evento opcional que puede ser usado para disparar la actualización.
-    Returns:
-        None
-    """
-    intervalo_str = combo_intervalo.get()
-    if intervalo_str == "Seleccione intervalo." or not intervalo_str.isdigit():
-        intervalo = 15
-    else:
-        intervalo = int(intervalo_str)
-
-    combo_intervalo.set(str(intervalo))  # Actualiza el valor en el combo
-    validar_intervalo()  # Valida el intervalo
-
-    total_borradores = contar_borradores(cuenta_seleccionada)
-    status_label.config(text=f"Borradores restantes: {total_borradores} | Enviados: 0")
-
-    if total_borradores > 0:
-        tiempo_total = intervalo * total_borradores
-        horas, resto = divmod(tiempo_total, 3600)
-        minutos, segundos = divmod(resto, 60)
-        estimado_label.config(text=f"Tiempo total estimado: {horas:02}:{minutos:02}:{segundos:02}")
-    else:
-        estimado_label.config(text="Tiempo restante: 00:00:00")
-
-def iniciar_temporizador_dinamico(tiempo_total):
-    """
-    Inicia un temporizador dinámico que actualiza la interfaz con el tiempo restante.
-    Args:
-        tiempo_total (int): Tiempo total estimado para el envío en segundos.
-    Returns:
-        None
-    """
-    def actualizar_reloj():
-        nonlocal tiempo_total
-        if tiempo_total <= 0 or not enviar_event.is_set():
-            estimado_label.config(text="Tiempo restante: 00:00:00")
-            return
-        horas, resto = divmod(tiempo_total, 3600)
-        minutos, segundos = divmod(resto, 60)
-        estimado_label.config(text=f"Tiempo restante: {horas:02}:{minutos:02}:{segundos:02}")
-        tiempo_total -= 1
-        root.after(1000, actualizar_reloj)
-
-    actualizar_reloj()
-
+# Función para enviar los borradores
 def enviar_borradores(cuenta, status_label):
     """
     Envía los borradores de la cuenta seleccionada con un intervalo definido.
@@ -197,6 +207,7 @@ def enviar_borradores(cuenta, status_label):
         enviar_event.clear()
         pythoncom.CoUninitialize()
 
+# Función para iniciar el proceso de envío
 def iniciar_envio():
     """
     Inicia el proceso de envío de borradores en segundo plano.
@@ -212,6 +223,7 @@ def iniciar_envio():
         threading.Thread(target=lambda: iniciar_temporizador_dinamico(tiempo_total), daemon=True).start()
         threading.Thread(target=enviar_borradores, args=(cuenta_seleccionada, status_label), daemon=True).start()
 
+# Función para detener el proceso de envío
 def detener_envio():
     """
     Detiene el proceso de envío de borradores.

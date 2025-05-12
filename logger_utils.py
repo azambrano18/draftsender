@@ -30,10 +30,8 @@ if not logging.getLogger().hasHandlers():
 def configurar_logger(nombre_modulo: str) -> logging.Logger:
     """
     Configura un logger para el módulo especificado.
-
     Args:
         nombre_modulo (str): El nombre del módulo para el cual se configura el logger.
-
     Returns:
         logging.Logger: El logger configurado para el módulo.
     """

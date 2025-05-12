@@ -9,11 +9,9 @@ logger = configurar_logger("ejecutores")  # Instancia del logger para este módu
 def validar_datos(perfil: str, requiere_archivos: bool = True) -> bool:
     """
     Valida que los datos necesarios estén presentes antes de ejecutar un script.
-
     Args:
         perfil (str): Perfil de Outlook seleccionado por el usuario.
         requiere_archivos (bool): Si se requieren archivos (Excel y Word) para el script.
-
     Returns:
         bool: True si todos los datos son válidos, False en caso contrario.
     """
@@ -37,11 +35,9 @@ def validar_datos(perfil: str, requiere_archivos: bool = True) -> bool:
 def ejecutar_script(nombre_script_txt: str, perfil: str):
     """
     Ejecuta un script según su nombre y el perfil de Outlook.
-
     Args:
         nombre_script_txt (str): Nombre del script a ejecutar (por ejemplo, "crear_borradores" o "timer_sent").
         perfil (str): Perfil de Outlook seleccionado.
-
     Returns:
         None
     """
@@ -78,10 +74,8 @@ def ejecutar_script(nombre_script_txt: str, perfil: str):
 def ejecutar_timer_send(perfil: str):
     """
     Ejecuta el script de envío de borradores "timer_sent".
-
     Args:
         perfil (str): Perfil de Outlook seleccionado.
-
     Returns:
         None
     """
