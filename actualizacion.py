@@ -9,7 +9,7 @@ from logger_utils import configurar_logger  # Para configurar el logger
 logger = configurar_logger("actualizacion")  # Instancia del logger para este módulo
 
 # Versión actual del programa
-__version__ = "1.0.0"
+__version__ = "1.0.0" # cambiar la version por cada empaquetamiento
 
 def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso, forzar=False):
     """
@@ -25,7 +25,7 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
     Returns:
         None
     """
-    url_api = "https://api.github.com/repos/azambrano18/crea_borradores/releases/latest"  # URL de la API de GitHub
+    url_api = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"  # URL de la API de GitHub
     try:
         logger.info("Verificando actualización...")
         with urllib.request.urlopen(url_api) as response:
@@ -53,6 +53,11 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
 
                 # Filtra los archivos que se deben descargar
                 descargas = [a for a in assets if a["name"] in archivos]
+                if not descargas:
+                    logger.warning("No se encontraron archivos para descargar.")
+                    messagebox.showwarning("No hay archivos", "No se encontraron archivos para actualizar.")
+                    return
+
                 avance = 100 // len(descargas)
                 base = 0
 
@@ -62,11 +67,16 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                     url = asset["browser_download_url"]
                     destino = os.path.join(exe_dir, archivos[nombre])
                     logger.info(f"Descargando {nombre} desde {url} a {destino}")
-                    urllib.request.urlretrieve(
-                        url,
-                        destino,
-                        reporthook=crear_hook(base, avance, barra_progreso, porcentaje_var, root)  # Muestra el progreso de la descarga
-                    )
+                    try:
+                        urllib.request.urlretrieve(
+                            url,
+                            destino,
+                            reporthook=crear_hook(base, avance, barra_progreso, porcentaje_var, root)  # Muestra el progreso de la descarga
+                        )
+                    except Exception as e:
+                        logger.error(f"Error al descargar el archivo {nombre}: {e}")
+                        messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo {nombre}. Intenta nuevamente.")
+                        return
                     base += avance
 
                 # Actualiza la barra de progreso y muestra el mensaje de éxito
