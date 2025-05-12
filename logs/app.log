@@ -341,3 +341,232 @@ TypeError: enviar_borradores() takes 2 positional arguments but 3 were given
 2025-05-12 03:15 - main - INFO - main [Línea 36] - Ícono cargado correctamente
 2025-05-12 03:15 - nombre_modulo - INFO - construir_gui [Línea 115] - Construyendo GUI de DraftSender
 2025-05-12 03:15 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:28 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:28 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:28 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:28 - nombre_modulo - INFO - construir_gui [Línea 115] - Construyendo GUI de DraftSender
+2025-05-12 03:29 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:37 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:37 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:37 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:37 - nombre_modulo - INFO - construir_gui [Línea 117] - Construyendo GUI de DraftSender
+2025-05-12 03:38 - nombre_modulo - ERROR - lanzar_envio_gui [Línea 82] - No se ha seleccionado una cuenta para envío.
+2025-05-12 03:38 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:40 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:40 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:40 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:40 - main - ERROR - main [Línea 52] - Ocurrió un error crítico en main.py
+Traceback (most recent call last):
+  File "D:\draftsender\main.py", line 42, in main
+    construir_gui(root)
+    ~~~~~~~~~~~~~^^^^^^
+TypeError: construir_gui() takes 0 positional arguments but 1 was given
+2025-05-12 03:41 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:41 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:41 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:41 - main - ERROR - main [Línea 52] - Ocurrió un error crítico en main.py
+Traceback (most recent call last):
+  File "D:\draftsender\main.py", line 42, in main
+    construir_gui(root)
+    ~~~~~~~~~~~~~^^^^^^
+TypeError: construir_gui() takes 0 positional arguments but 1 was given
+2025-05-12 03:43 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:43 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:43 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:43 - nombre_modulo - INFO - construir_gui [Línea 121] - Construyendo GUI de DraftSender
+2025-05-12 03:43 - nombre_modulo - ERROR - construir_gui [Línea 131] - No se pudo cargar la imagen de portada
+Traceback (most recent call last):
+  File "D:\draftsender\gui.py", line 127, in construir_gui
+    label_img = tk.Label(root, image=img_tk)
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 3363, in __init__
+    Widget.__init__(self, master, 'label', cnf, kw)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2774, in __init__
+    self.tk.call(
+    ~~~~~~~~~~~~^
+        (widgetName, self._w) + extra + self._options(cnf))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: image "pyimage1" doesn't exist
+2025-05-12 03:43 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:43 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:43 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:43 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:43 - nombre_modulo - INFO - construir_gui [Línea 121] - Construyendo GUI de DraftSender
+2025-05-12 03:43 - nombre_modulo - ERROR - construir_gui [Línea 131] - No se pudo cargar la imagen de portada
+Traceback (most recent call last):
+  File "D:\draftsender\gui.py", line 127, in construir_gui
+    label_img = tk.Label(root, image=img_tk)
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 3363, in __init__
+    Widget.__init__(self, master, 'label', cnf, kw)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2774, in __init__
+    self.tk.call(
+    ~~~~~~~~~~~~^
+        (widgetName, self._w) + extra + self._options(cnf))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: image "pyimage1" doesn't exist
+2025-05-12 03:43 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:44 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:44 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:44 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:44 - nombre_modulo - INFO - construir_gui [Línea 121] - Construyendo GUI de DraftSender
+2025-05-12 03:44 - nombre_modulo - ERROR - construir_gui [Línea 131] - No se pudo cargar la imagen de portada
+Traceback (most recent call last):
+  File "D:\draftsender\gui.py", line 127, in construir_gui
+    label_img = tk.Label(root, image=img_tk)
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 3363, in __init__
+    Widget.__init__(self, master, 'label', cnf, kw)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2774, in __init__
+    self.tk.call(
+    ~~~~~~~~~~~~^
+        (widgetName, self._w) + extra + self._options(cnf))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: image "pyimage1" doesn't exist
+2025-05-12 03:44 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:44 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:44 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:44 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:44 - main - ERROR - main [Línea 52] - Ocurrió un error crítico en main.py
+Traceback (most recent call last):
+  File "D:\draftsender\main.py", line 42, in main
+    construir_gui(root)
+    ~~~~~~~~~~~~~^^^^^^
+TypeError: construir_gui() takes 0 positional arguments but 1 was given
+2025-05-12 03:45 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:45 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:45 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:45 - nombre_modulo - INFO - construir_gui [Línea 121] - Construyendo GUI de DraftSender
+2025-05-12 03:45 - nombre_modulo - ERROR - construir_gui [Línea 131] - No se pudo cargar la imagen de portada
+Traceback (most recent call last):
+  File "D:\draftsender\gui.py", line 127, in construir_gui
+    label_img = tk.Label(root, image=img_tk)
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 3363, in __init__
+    Widget.__init__(self, master, 'label', cnf, kw)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2774, in __init__
+    self.tk.call(
+    ~~~~~~~~~~~~^
+        (widgetName, self._w) + extra + self._options(cnf))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: image "pyimage1" doesn't exist
+2025-05-12 03:45 - main - INFO - main [Línea 48] - Aplicación finalizada correctamente
+2025-05-12 03:46 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:46 - main - INFO - main [Línea 23] - Iniciando DraftSender GUI
+2025-05-12 03:46 - main - INFO - main [Línea 36] - Ícono cargado correctamente
+2025-05-12 03:46 - main - ERROR - main [Línea 52] - Ocurrió un error crítico en main.py
+Traceback (most recent call last):
+  File "D:\draftsender\main.py", line 42, in main
+    construir_gui(root)  # Aquí pasamos 'root' como argumento
+    ~~~~~~~~~~~~~^^^^^^
+TypeError: construir_gui() takes 0 positional arguments but 1 was given
+2025-05-12 03:48 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:48 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 03:48 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 03:48 - main - ERROR - main [Línea 53] - Ocurrió un error crítico en main.py
+Traceback (most recent call last):
+  File "D:\draftsender\main.py", line 43, in main
+    construir_gui(root)
+    ~~~~~~~~~~~~~^^^^^^
+TypeError: construir_gui() takes 0 positional arguments but 1 was given
+2025-05-12 03:48 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 03:48 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 03:48 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 03:48 - nombre_modulo - INFO - construir_gui [Línea 117] - Construyendo GUI de DraftSender
+2025-05-12 03:48 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 07:36 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 07:36 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 07:36 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 07:36 - nombre_modulo - INFO - construir_gui [Línea 117] - Construyendo GUI de DraftSender
+2025-05-12 07:36 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 07:39 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 07:39 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 07:39 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 07:39 - nombre_modulo - INFO - construir_gui [Línea 117] - Construyendo GUI de DraftSender
+2025-05-12 07:39 - outlook_utils - INFO - cerrar_outlook [Línea 58] - Outlook cerrado correctamente.
+2025-05-12 07:39 - outlook_utils - INFO - obtener_ruta_outlook [Línea 78] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 07:39 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 99] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 07:39 - outlook_utils - INFO - obtener_cuentas_activas [Línea 124] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 07:39 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 07:59 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 07:59 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 07:59 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 07:59 - nombre_modulo - INFO - construir_gui [Línea 117] - Construyendo GUI de DraftSender
+2025-05-12 07:59 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:02 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:02 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:02 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:02 - nombre_modulo - INFO - construir_gui [Línea 197] - Construyendo GUI de DraftSender
+2025-05-12 08:02 - nombre_modulo - ERROR - lanzar_envio_gui [Línea 172] - No se ha seleccionado una cuenta para envío.
+2025-05-12 08:02 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:04 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:04 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:04 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:05 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:05 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:05 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:05 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:05 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:08 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:08 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:08 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:08 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:08 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:08 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:08 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:08 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:08 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:08 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:08 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:08 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:09 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:09 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:09 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:09 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:09 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:09 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:09 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:12 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:12 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:12 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:12 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:13 - ejecutores - ERROR - validar_datos [Línea 27] - Cuenta asociada no seleccionada
+2025-05-12 08:13 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:14 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:14 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:14 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:15 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:18 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:18 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:18 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:18 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:19 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:19 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:19 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:19 - outlook_utils - INFO - cerrar_outlook [Línea 58] - Outlook cerrado correctamente.
+2025-05-12 08:19 - outlook_utils - INFO - obtener_ruta_outlook [Línea 78] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 08:20 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 99] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 08:20 - outlook_utils - INFO - obtener_cuentas_activas [Línea 124] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 08:24 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:28 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:28 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:28 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:28 - outlook_utils - INFO - cerrar_outlook [Línea 58] - Outlook cerrado correctamente.
+2025-05-12 08:28 - outlook_utils - INFO - obtener_ruta_outlook [Línea 78] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 08:28 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 99] - Outlook iniciado con el perfil: Alcides MR
+2025-05-12 08:28 - outlook_utils - INFO - obtener_cuentas_activas [Línea 124] - Se encontraron cuentas activas: ['azambrano@mejoreferido.cl']
+2025-05-12 08:29 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
+2025-05-12 08:31 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: 
+2025-05-12 08:31 - main - INFO - main [Línea 24] - Iniciando DraftSender GUI
+2025-05-12 08:31 - main - INFO - main [Línea 37] - Ícono cargado correctamente
+2025-05-12 08:31 - outlook_utils - INFO - cerrar_outlook [Línea 58] - Outlook cerrado correctamente.
+2025-05-12 08:31 - outlook_utils - INFO - obtener_ruta_outlook [Línea 78] - Ruta de Outlook encontrada: C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
+2025-05-12 08:31 - outlook_utils - INFO - iniciar_outlook_con_perfil [Línea 99] - Outlook iniciado con el perfil: Dhumanlab
+2025-05-12 08:31 - outlook_utils - INFO - obtener_cuentas_activas [Línea 124] - Se encontraron cuentas activas: ['mlobos@dhumanlab.com']
+2025-05-12 08:31 - archivos - INFO - cargar_excel [Línea 27] - Archivo Excel cargado: D:/draftsender/resources/formato.xlsm
+2025-05-12 08:31 - archivos - INFO - cargar_docx [Línea 68] - Archivo Word cargado: D:/Usuarios/Work/Documents/1_MR/FORMATO_ENVIOS/DYNAMIC/txt_1.docx
+2025-05-12 08:31 - borradores - INFO - generar_borradores [Línea 119] - Se generaron 1 borradores.
+2025-05-12 08:31 - ejecutores - INFO - ejecutar_script [Línea 62] - 1 borradores creados correctamente.
+2025-05-12 08:32 - envios - INFO - <module> [Línea 18] - Cuenta seleccionada: mlobos@dhumanlab.com
+2025-05-12 08:34 - envios - INFO - enviar_borradores [Línea 208] - Se enviaron 1 de 1 borradores.
+2025-05-12 08:34 - main - INFO - main [Línea 49] - Aplicación finalizada correctamente
