@@ -10,10 +10,8 @@ def cargar_excel(ruta_var):
     """
     Abre un diálogo para seleccionar un archivo Excel (.xlsx, .xls, .xlsm) y guarda su ruta en el estado global.
     Actualiza la variable `ruta_var` con el nombre del archivo seleccionado.
-
     Args:
         ruta_var (tk.StringVar): Variable de Tkinter para mostrar la ruta del archivo en la interfaz.
-
     Returns:
         None
     """
@@ -30,10 +28,8 @@ def cargar_docx(ruta_var):
     """
     Abre un diálogo para seleccionar un archivo Word (.docx) y valida su contenido.
     Si el archivo es válido, guarda su ruta en el estado global y actualiza la variable `ruta_var`.
-
     Args:
         ruta_var (tk.StringVar): Variable de Tkinter para mostrar la ruta del archivo en la interfaz.
-
     Returns:
         None
     """

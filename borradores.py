@@ -9,24 +9,30 @@ logger = configurar_logger("borradores")  # Instancia del logger para este módu
 def cargar_cuerpo_desde_docx(archivo_docx: str, variables: dict) -> str:
     """
     Carga el contenido de un archivo DOCX y reemplaza las variables en el cuerpo del texto con los valores proporcionados.
-    Args: archivo_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
-    variables (dict): Diccionario con las variables a reemplazar en el texto.
-    Returns: str: El contenido del cuerpo del correo en formato HTML.
+    Args:
+        archivo_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
+        variables (dict): Diccionario con las variables a reemplazar en el texto.
+    Returns:
+        str: El contenido del cuerpo del correo en formato HTML.
     """
     if not os.path.exists(archivo_docx):
-        raise FileNotFoundError(f"El archivo '{archivo_docx}' no existe.")  # Verifica si el archivo existe
+        raise FileNotFoundError(f"El archivo '{archivo_docx}' no existe.")
 
-    # Convierte el archivo DOCX a HTML usando la librería 'mammoth'
     with open(archivo_docx, "rb") as docx_file:
         resultado = mammoth.convert_to_html(docx_file)
         cuerpo = resultado.value
 
-    # Reemplaza las variables [Campo] y {{campo}} por los valores correspondientes del diccionario
+    # Reemplaza etiquetas como [Campo] y {{campo}}
     for clave, valor in variables.items():
         cuerpo = cuerpo.replace(f"[{clave}]", str(valor))
         cuerpo = cuerpo.replace(f"{{{{{clave}}}}}", str(valor))  # soporta {{Nombre}}
 
-    # Retorna el cuerpo del correo con estilo en HTML
+    # Validación opcional: advierte si la etiqueta [Empresa] quedó sin reemplazar
+    if "[Empresa]" in cuerpo or "{{Empresa}}" in cuerpo:
+        if not variables.get("Empresa"):
+            logger.warning("Etiqueta [Empresa] no tiene valor asignado en esta fila.")
+
+    # Aplica estilo HTML básico
     cuerpo = f'<div style="font-family: Calibri, sans-serif; font-size: 11pt;">{cuerpo}</div>'
     return cuerpo
 
