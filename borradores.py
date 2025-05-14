@@ -2,19 +2,16 @@ import os  # Para manejar rutas de archivos y comprobar su existencia
 import pandas as pd  # Para trabajar con archivos Excel
 import win32com.client  # Para interactuar con Outlook
 import mammoth  # Para convertir archivos DOCX a HTML
+import re
 
 from logger_utils import configurar_logger  # Para la configuración del logger
 logger = configurar_logger("borradores")  # Instancia del logger para este módulo
 
+def es_email_valido(email: str) -> bool:
+    patron = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+    return re.match(patron, email) is not None
+
 def cargar_cuerpo_desde_docx(archivo_docx: str, variables: dict) -> str:
-    """
-    Carga el contenido de un archivo DOCX y reemplaza las variables en el cuerpo del texto con los valores proporcionados.
-    Args:
-        archivo_docx (str): Ruta del archivo DOCX que contiene el cuerpo del correo.
-        variables (dict): Diccionario con las variables a reemplazar en el texto.
-    Returns:
-        str: El contenido del cuerpo del correo en formato HTML.
-    """
     if not os.path.exists(archivo_docx):
         raise FileNotFoundError(f"El archivo '{archivo_docx}' no existe.")
 
@@ -22,17 +19,18 @@ def cargar_cuerpo_desde_docx(archivo_docx: str, variables: dict) -> str:
         resultado = mammoth.convert_to_html(docx_file)
         cuerpo = resultado.value
 
-    # Reemplaza etiquetas como [Campo] y {{campo}}
+    # Reemplazar etiquetas
     for clave, valor in variables.items():
         cuerpo = cuerpo.replace(f"[{clave}]", str(valor))
-        cuerpo = cuerpo.replace(f"{{{{{clave}}}}}", str(valor))  # soporta {{Nombre}}
+        cuerpo = cuerpo.replace(f"{{{{{clave}}}}}", str(valor))  # {{Nombre}}
 
-    # Validación opcional: advierte si la etiqueta [Empresa] quedó sin reemplazar
-    if "[Empresa]" in cuerpo or "{{Empresa}}" in cuerpo:
-        if not variables.get("Empresa"):
-            logger.warning("Etiqueta [Empresa] no tiene valor asignado en esta fila.")
+    # Buscar etiquetas no reemplazadas
+    etiquetas_no_reemplazadas = re.findall(r"\[\w+\]|\{\{\w+\}\}", cuerpo)
+    if etiquetas_no_reemplazadas:
+        etiquetas_unicas = list(set(etiquetas_no_reemplazadas))
+        logger.warning(f"Etiquetas no reemplazadas detectadas: {etiquetas_unicas}")
 
-    # Aplica estilo HTML básico
+    # Aplicar estilo
     cuerpo = f'<div style="font-family: Calibri, sans-serif; font-size: 11pt;">{cuerpo}</div>'
     return cuerpo
 
@@ -76,7 +74,7 @@ def crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook="")
     mensaje.Close(1)  # Cierra el mensaje
 
 
-def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str) -> int:
+def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str, callback_progreso=None) -> int:
     """
     Genera borradores de correos electrónicos a partir de un archivo Excel y un archivo DOCX.
     Args:
@@ -102,15 +100,27 @@ def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str
 
     for index, fila in df.iterrows():
         try:
-            # Obtiene los valores de la fila correspondiente
+            # Validación de campos obligatorios
             destinatario = str(fila["Correo"]).strip()
             asunto = str(fila["Asunto"]).strip()
-            variables = {col: str(fila[col]).strip() for col in df.columns}
-            cuerpo_html = cargar_cuerpo_desde_docx(ruta_docx, variables)  # Carga el cuerpo HTML desde el archivo DOCX
-            crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook=perfil)  # Crea el borrador
-            enviados += 1  # Incrementa el contador de borradores enviados
-        except Exception as e:
-            logger.error(f"Error en fila {index + 1}: {e}", exc_info=True)  # Registra errores en el proceso
+            nombre = str(fila["Nombre"]).strip()
 
-    logger.info(f"Se generaron {enviados} borradores.")  # Informa el número de borradores generados
+            if not destinatario or not asunto or not nombre:
+                raise ValueError("Uno de los campos obligatorios (Correo, Asunto, Nombre) está vacío.")
+
+            if not es_email_valido(destinatario):
+                raise ValueError(f"Correo inválido: {destinatario}")
+
+            variables = {col: str(fila[col]).strip() for col in df.columns}
+            cuerpo_html = cargar_cuerpo_desde_docx(ruta_docx, variables)
+            crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook=perfil)
+            enviados += 1
+
+        except Exception as e:
+            logger.error(f"Error en fila {index + 1}: {e}", exc_info=True)
+
+        if callback_progreso:
+            callback_progreso(index + 1, len(df))
+
+    logger.info(f"Se generaron {enviados} borradores.")
     return enviados

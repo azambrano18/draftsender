@@ -32,7 +32,7 @@ def validar_datos(perfil: str, requiere_archivos: bool = True) -> bool:
 
     return True
 
-def ejecutar_script(nombre_script_txt: str, perfil: str):
+def ejecutar_script(nombre_script_txt: str, perfil: str, callback_progreso=None):
     """
     Ejecuta un script según su nombre y el perfil de Outlook.
     Args:
@@ -47,14 +47,15 @@ def ejecutar_script(nombre_script_txt: str, perfil: str):
         return
 
     try:
-        if "crear_borradores" in nombre_script_txt.lower():  # Si el script es para crear borradores
+        if "crear_borradores" in nombre_script_txt.lower():
             cantidad = generar_borradores(
                 cuenta=estado.cuenta_seleccionada,
                 perfil=perfil,
                 ruta_excel=estado.ruta_excel,
-                ruta_docx=estado.ruta_docx
+                ruta_docx=estado.ruta_docx,
+                callback_progreso=callback_progreso
             )
-            messagebox.showinfo("Éxito", f"Se crearon {cantidad} borradores correctamente.")  # Muestra un mensaje de éxito
+
             logger.info(f"{cantidad} borradores creados correctamente.")  # Registra la creación de borradores en el logger
             return
 

@@ -1,9 +1,9 @@
 import os  # Para interactuar con el sistema de archivos
+import estado  # Para acceder a las variables de estado globales
 from tkinter import filedialog, messagebox  # Para abrir el diálogo de selección de archivos y mostrar mensajes
 from docx import Document  # Para trabajar con archivos .docx
-import estado  # Para acceder a las variables de estado globales
-
 from logger_utils import configurar_logger  # Para configurar el logger
+
 logger = configurar_logger("archivos")  # Instancia del logger para este módulo
 
 def cargar_excel(ruta_var):
