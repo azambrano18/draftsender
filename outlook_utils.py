@@ -54,23 +54,23 @@ def cerrar_outlook():
     except Exception:
         logger.exception("Error al intentar cerrar Outlook.")  # Registra un error si no se puede cerrar Outlook
 
-def obtener_ruta_outlook():
-    """
-    Obtiene la ruta de instalación de Outlook en el sistema.
-    Busca en diferentes rutas posibles dependiendo de la instalación de Microsoft Office.
-    Returns: str: Ruta de la instalación de Outlook.
-    """
+def abrir_outlook(self):
     rutas = [
         r"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE",
         r"C:\Program Files (x86)\Microsoft Office\Office16\OUTLOOK.EXE",
         r"C:\Program Files\Microsoft Office\Office16\OUTLOOK.EXE"
     ]
     for ruta in rutas:
-        if os.path.exists(ruta):  # Verifica si la ruta existe
-            logger.info(f"Ruta de Outlook encontrada: {ruta}")
-            return ruta
-    logger.error("No se encontró Outlook en ninguna ruta esperada.")
-    raise FileNotFoundError("No se encontró Outlook.")  # Lanza un error si no se encuentra Outlook
+        if os.path.exists(ruta):
+            try:
+                subprocess.Popen(ruta)
+                time.sleep(5)
+                return
+            except Exception as e:
+                logger.error(f"No se pudo abrir Outlook: {e}")
+                return
+
+    logger.error("No se encontró Outlook en las rutas conocidas.")
 
 def iniciar_outlook_con_perfil(perfil: str):
     """
@@ -80,7 +80,7 @@ def iniciar_outlook_con_perfil(perfil: str):
     Returns: None
     """
     try:
-        ruta_outlook = obtener_ruta_outlook()  # Obtiene la ruta de instalación de Outlook
+        ruta_outlook = abrir_outlook()  # Obtiene la ruta de instalación de Outlook
         subprocess.Popen([ruta_outlook, "/profile", perfil])  # Ejecuta Outlook con el perfil
         time.sleep(7)  # Espera a que Outlook se inicie completamente
         logger.info(f"Outlook iniciado con el perfil: {perfil}")
