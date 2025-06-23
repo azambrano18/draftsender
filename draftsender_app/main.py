@@ -104,6 +104,34 @@ logger = None  # declaración global segura para usar en except
 def correo_valido(correo: str) -> bool:
     return bool(re.match(r"^[\w\.-]+@mejoreferido\.cl$", correo))
 
+import os
+import sys
+import time
+import glob
+
+def eliminar_version_anterior_si_es_necesario():
+    """
+    Si este ejecutable es 'DraftSender vX.Y.Z.exe', elimina cualquier otra 'DraftSender v*.exe'
+    excepto a sí mismo. No toca la carpeta 'data'.
+    """
+    exe_actual = os.path.abspath(sys.argv[0])
+    nombre_actual = os.path.basename(exe_actual)
+    carpeta = os.path.dirname(exe_actual)
+
+    if not nombre_actual.lower().startswith("draftsender v") or not nombre_actual.lower().endswith(".exe"):
+        return  # No está en formato de versión numerada
+
+    for exe in glob.glob(os.path.join(carpeta, "DraftSender v*.exe")):
+        exe_path = os.path.abspath(exe)
+        if exe_path != exe_actual:
+            try:
+                os.remove(exe_path)
+                print(f"Versión anterior eliminada: {exe}")
+            except Exception as e:
+                print(f"Error al eliminar {exe}: {e}")
+
+eliminar_version_anterior_si_es_necesario()
+
 def main() -> None:
     """
     Función principal que inicializa la aplicación DraftSender con manejo robusto de errores.

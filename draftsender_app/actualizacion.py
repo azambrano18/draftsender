@@ -17,60 +17,41 @@ logger = logging.getLogger("DraftSender")
 VERSION_FILE = os.path.join("data", "version.txt")
 URL_API = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
 
-def descargar_actualizacion(url: str):
+def descargar_actualizacion(url: str, nueva_version: str):
     """
-    Descarga el nuevo .exe desde la URL proporcionada y lanza un script por lotes
-    que espera que el ejecutable actual se cierre antes de reemplazarlo.
+    Descarga la nueva versión como 'DraftSender vX.Y.Z.exe',
+    actualiza version.txt, lanza el nuevo exe y cierra la app actual.
     """
     try:
-        nombre_exe = os.path.basename(sys.argv[0])
         carpeta = os.path.dirname(sys.argv[0])
-        ruta_temp = os.path.join(carpeta, f"{nombre_exe}_update_temp.exe")
-        ruta_bat = os.path.join(carpeta, "updater.bat")
+        nuevo_nombre = f"DraftSender v{nueva_version}.exe"
+        ruta_nuevo = os.path.join(carpeta, nuevo_nombre)
 
-        # Descargar a archivo temporal
-        with urllib.request.urlopen(url) as response, open(ruta_temp, 'wb') as out_file:
+        # Descargar el nuevo .exe
+        with urllib.request.urlopen(url) as response, open(ruta_nuevo, 'wb') as out_file:
             shutil.copyfileobj(response, out_file)
-        logger.info(f"Descargado {ruta_temp}")
 
-        # Crear script por lotes para renombrar y ejecutar
-        with open(ruta_bat, "w") as f:
-            f.write(f"""@echo off
-setlocal
+        if os.path.getsize(ruta_nuevo) < 5 * 1024 * 1024:
+            raise ValueError("El ejecutable descargado parece incompleto.")
 
-set EXE="{nombre_exe}"
-set TEMP="{os.path.basename(ruta_temp)}"
+        logger.info(f"Nuevo ejecutable descargado: {ruta_nuevo}")
 
-echo Esperando que %EXE% se cierre...
+        # Crear o actualizar version.txt
+        os.makedirs("data", exist_ok=True)
+        with open(os.path.join("data", "version.txt"), "w", encoding="utf-8") as f:
+            f.write(nueva_version)
 
-:espera
-tasklist | findstr /i %EXE% >nul
-if not errorlevel 1 (
-    timeout /t 2 >nul
-    goto espera
-)
+        messagebox.showinfo(
+            "Actualización completada",
+            f"La nueva versión {nueva_version} fue descargada.\nLa app se cerrará para continuar con la actualización."
+        )
 
-if exist %EXE% (
-    del %EXE% /f /q
-)
-
-if exist %TEMP% (
-    rename %TEMP% %EXE%
-)
-
-start "" %EXE%
-del "%~f0"
-endlocal
-""")
-
-        logger.info(f"Script de actualización creado: {ruta_bat}")
-        subprocess.Popen(['cmd', '/c', 'start', '', ruta_bat], shell=True)
-        messagebox.showinfo("Actualización", "La nueva versión fue descargada.\nLa app se cerrará para completar la actualización.")
+        subprocess.Popen([ruta_nuevo], shell=True)
         sys.exit(0)
 
     except Exception as e:
-        logger.error(f"Error al descargar la actualización: {e}")
-        messagebox.showerror("Error", f"No se pudo descargar la actualización:\n{e}")
+        logger.error(f"Error en actualización: {e}")
+        messagebox.showerror("Error", f"No se pudo completar la actualización:\n{e}")
 
 def obtener_version_actual():
     os.makedirs("data", exist_ok=True)
@@ -80,7 +61,6 @@ def obtener_version_actual():
         return "v0.0.0"
     with open(VERSION_FILE, "r") as f:
         return f.read().strip()
-
 
 def actualizar_version_local(nueva_version: str):
     with open(VERSION_FILE, "w", encoding="utf-8") as f:
@@ -117,7 +97,7 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
 
-        ultima_version = data["tag_name"]  # Conserva el tag completo (ej: 'v0.0.12' o 'build-10')
+        ultima_version = data["tag_name"].strip()  # Ej: 'v1.0.3'
         assets = data["assets"]
         logger.info(f"Última versión disponible: {ultima_version}")
 
@@ -143,14 +123,17 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            asset_match = next((a for a in assets if a["name"].lower() == "draftsender.exe"), None)
+            # Buscar el asset cuyo nombre coincida con el formato 'DraftSender vX.Y.Z.exe'
+            nombre_esperado = f"draftsender v{ultima_version.strip().lower()}.exe"
+            asset_match = next((a for a in assets if a["name"].strip().lower() == nombre_esperado), None)
+
             if not asset_match:
-                logger.warning("No se encontró el asset 'DraftSender.exe' en el release.")
-                messagebox.showwarning("No disponible", "No se encontró el archivo 'DraftSender.exe' para descargar.")
+                logger.warning(f"No se encontró el asset '{nombre_esperado}' en el release.")
+                messagebox.showwarning("No disponible", f"No se encontró el archivo '{nombre_esperado}' para descargar.")
                 return
 
             actualizar_version_local(ultima_version)
-            descargar_actualizacion(url=asset_match["browser_download_url"])
+            descargar_actualizacion(url=asset_match["browser_download_url"], nueva_version=ultima_version)
 
     except Exception as e:
         logger.exception(f"Error al verificar actualización desde {URL_API}")
