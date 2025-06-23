@@ -1,6 +1,7 @@
 # Entornos virtuales
 .venv/
 .env/
+*.pyc
 
 # IDEs
 .idea/
