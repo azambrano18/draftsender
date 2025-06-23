@@ -1,0 +1,22 @@
+# Entornos virtuales
+.venv/
+.env/
+
+# IDEs
+.idea/
+.vscode/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Archivos de compilación PyInstaller
+build/
+dist/
+*.spec
+
+# Logs y temporales
+*.log
+*.bak
+*.tmp

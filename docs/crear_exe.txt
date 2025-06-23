@@ -1,0 +1,11 @@
+*************IMPORTANTE**********
+SE DEBE EJECUTAR DESDE D:\draftsender\draftsender_app
+
+
+EL .EXE DEBE SER SUBIDO A GITHUB CON EL NOMBRE "draftsender.exe"
+
+
+pyinstaller --onefile --windowed --icon=config/icon.ico --add-data "config/icon.ico;config" --add-data "config/cover.jpg;config" --clean main.py
+
+
+

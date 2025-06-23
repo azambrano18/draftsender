@@ -1,0 +1,9 @@
+pandas
+openpyxl
+pywin32
+psutil
+requests
+mammoth
+python-docx
+pytz
+psycopg2
