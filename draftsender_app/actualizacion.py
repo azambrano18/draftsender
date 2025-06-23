@@ -25,33 +25,47 @@ def descargar_actualizacion(url: str):
     try:
         nombre_exe = os.path.basename(sys.argv[0])
         carpeta = os.path.dirname(sys.argv[0])
-        ruta_nueva = os.path.join(carpeta, f"{nombre_exe}_update.exe")
+        ruta_temp = os.path.join(carpeta, f"{nombre_exe}_update_temp.exe")
         ruta_bat = os.path.join(carpeta, "updater.bat")
 
-        # Descargar el nuevo ejecutable
-        with urllib.request.urlopen(url) as response, open(ruta_nueva, 'wb') as out_file:
+        # Descargar a archivo temporal
+        with urllib.request.urlopen(url) as response, open(ruta_temp, 'wb') as out_file:
             shutil.copyfileobj(response, out_file)
-        logger.info(f"Descargado {ruta_nueva}")
+        logger.info(f"Descargado {ruta_temp}")
 
-        # Crear .bat que espera cierre del exe, reemplaza y relanza
+        # Crear script por lotes para renombrar y ejecutar
         with open(ruta_bat, "w") as f:
             f.write(f"""@echo off
-echo Esperando que {nombre_exe} se cierre...
+setlocal
+
+set EXE="{nombre_exe}"
+set TEMP="{os.path.basename(ruta_temp)}"
+
+echo Esperando que %EXE% se cierre...
+
 :espera
-tasklist | findstr /i "{nombre_exe}" >nul
+tasklist | findstr /i %EXE% >nul
 if not errorlevel 1 (
     timeout /t 2 >nul
     goto espera
 )
-del "{nombre_exe}" /f
-rename "{nombre_exe}_update.exe" "{nombre_exe}"
-start "" "{nombre_exe}"
+
+if exist %EXE% (
+    del %EXE% /f /q
+)
+
+if exist %TEMP% (
+    rename %TEMP% %EXE%
+)
+
+start "" %EXE%
 del "%~f0"
+endlocal
 """)
 
         logger.info(f"Script de actualización creado: {ruta_bat}")
         subprocess.Popen(['cmd', '/c', 'start', '', ruta_bat], shell=True)
-        messagebox.showinfo("Actualización", "Se descargó la nueva versión.\nLa app se cerrará para completar la actualización.")
+        messagebox.showinfo("Actualización", "La nueva versión fue descargada.\nLa app se cerrará para completar la actualización.")
         sys.exit(0)
 
     except Exception as e:
@@ -69,11 +83,9 @@ def obtener_version_actual():
 
 
 def actualizar_version_local(nueva_version: str):
-    """
-    Actualiza el archivo version.txt con la versión descargada.
-    """
-    with open(VERSION_FILE, "w") as f:
-        f.write(f"v{nueva_version}")
+    with open(VERSION_FILE, "w", encoding="utf-8") as f:
+        f.write(nueva_version)
+
 
 def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):
     """
