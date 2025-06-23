@@ -34,7 +34,18 @@ jobs:
           "${{ github.run_number }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
 
       - name: Build with PyInstaller
-        run: pyinstaller --noconfirm --onefile --windowed --name DraftSender --icon draftsender_app/config/icon.ico --add-data "draftsender_app/config/cover.jpg;config" --hidden-import=requests --hidden-import=psutil --hidden-import=PIL --hidden-import=dns --hidden-import=pywinauto draftsender_app/main.py
+        run: |
+          pyinstaller --noconfirm --onefile --windowed `
+          --name DraftSender `
+          --icon draftsender_app/config/icon.ico `
+          --add-data "draftsender_app/config/cover.jpg;config" `
+          --paths . `
+          --hidden-import=requests `
+          --hidden-import=psutil `
+          --hidden-import=PIL `
+          --hidden-import=dns `
+          --hidden-import=pywinauto `
+          draftsender_app/main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

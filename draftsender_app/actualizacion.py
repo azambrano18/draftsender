@@ -9,7 +9,7 @@ import urllib.request
 import shutil
 import os
 import subprocess
-import logger_utils as logger
+from draftsender_app import logger_utils as logger
 from tkinter import messagebox
 
 logger = logging.getLogger("DraftSender")
