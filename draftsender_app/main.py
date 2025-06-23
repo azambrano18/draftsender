@@ -1,6 +1,4 @@
-import os
 import re
-import sys
 import atexit
 import subprocess
 from tkinter import Tk, Toplevel, Label, Entry, Button, messagebox
