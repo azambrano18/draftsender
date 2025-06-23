@@ -538,10 +538,11 @@ class DraftSenderApp:
 
     def actualizar_aplicacion_intermedia(self):
         """
-        Lanza un proceso externo para actualizar la aplicación usando el ejecutable 'actualizacion.exe'.
-        Cierra la app actual al iniciar la actualización.
+        Lanza directamente el proceso de descarga y actualización.
         """
-        verificar_actualizacion(self.root, self.barra_progreso, self.porcentaje_var, self.frame_progreso, self.status_label, self.status_var)
+        from draftsender_app.actualizacion import descargar_actualizacion
+        if messagebox.askyesno("Confirmar actualización", "¿Deseas buscar y aplicar la última versión disponible?"):
+            descargar_actualizacion()
 
     def mostrar_acerca_de(self):
         """

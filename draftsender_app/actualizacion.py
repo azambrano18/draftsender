@@ -18,6 +18,10 @@ VERSION_FILE = os.path.join("data", "version.txt")
 URL_API = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
 
 def descargar_actualizacion():
+    """
+    Descarga una nueva versión de DraftSender.exe y lanza un script por lotes
+    que espera el cierre del ejecutable actual antes de reemplazarlo de forma segura.
+    """
     try:
         url = "https://github.com/azambrano18/draftsender/releases/download/v0.0.13/DraftSender.exe"
         carpeta = os.path.dirname(sys.argv[0])
@@ -25,32 +29,38 @@ def descargar_actualizacion():
         ruta_nueva = os.path.join(carpeta, "DraftSender_update.exe")
         ruta_bat = os.path.join(carpeta, "updater.bat")
 
-        # Descargar nueva versión como DraftSender_update.ex
+        # Descargar nueva versión como DraftSender_update.exe
         with urllib.request.urlopen(url) as response, open(ruta_nueva, 'wb') as out_file:
             shutil.copyfileobj(response, out_file)
         logger.info(f"Descargado DraftSender_update.exe en: {ruta_nueva}")
 
-        # Crear script por lotes para reemplazo
+        # Crear script por lotes que espera que se cierre el .exe original
         with open(ruta_bat, "w") as f:
             f.write(f"""@echo off
 echo Esperando que DraftSender se cierre...
-timeout /t 3 /nobreak > NUL
+:espera
+tasklist | findstr /i "{exe_actual}" >nul
+if not errorlevel 1 (
+    timeout /t 2 >nul
+    goto espera
+)
 del "{exe_actual}" /f
 rename "DraftSender_update.exe" "{exe_actual}"
 start "" "{exe_actual}"
-del updater.bat
+del "%~f0"
 """)
-        logger.info("Archivo updater.bat generado.")
 
-        # Ejecutar el script para completar actualización
+        logger.info("Archivo updater.bat generado correctamente.")
+
+        # Ejecutar script de actualización
         subprocess.Popen(['cmd', '/c', 'start', '', ruta_bat], shell=True)
 
-        messagebox.showinfo("Actualización", "Actualización descargada. La app se cerrará para completar el reemplazo.")
+        messagebox.showinfo("Actualización", "Actualización descargada.\nLa app se cerrará para aplicar los cambios.")
         sys.exit(0)
 
     except Exception as e:
         logger.error(f"Error al descargar la actualización: {e}")
-        messagebox.showerror("Error", f"No se pudo descargar la actualización: {e}")
+        messagebox.showerror("Error", f"No se pudo completar la actualización:\n{e}")
 
 def obtener_version_actual():
     """
@@ -120,8 +130,8 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
             return
 
         if messagebox.askyesno("Actualización disponible", f"Hay una nueva versión ({ultima_version}). ¿Deseas descargarla ahora?"):
-            ejecutable_actual = sys.executable
 
+            ejecutable_actual = sys.executable
             if not ejecutable_actual.lower().endswith(".exe") or "python" in os.path.basename(ejecutable_actual).lower():
                 logger.warning("Modo desarrollo detectado. No se reemplazará el ejecutable.")
                 messagebox.showinfo("Modo desarrollo", "Estás ejecutando en modo desarrollo. No se realizará actualización automática.")
@@ -131,68 +141,10 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            exe_dir = os.path.dirname(ejecutable_actual)
-            descargas = [a for a in assets if a["name"].endswith(".exe") and a["name"].lower().startswith("draftsender")]
-
-            if not descargas:
-                logger.warning("No se encontraron archivos ejecutables para actualizar.")
-                messagebox.showwarning("No disponible", "No se encontró el archivo ejecutable de actualización.")
-                return
-
-            barra_progreso["value"] = 0
-            porcentaje_var.set("0%")
-            frame_progreso.pack(side="bottom", fill="x", padx=10, pady=5)
-            root.update_idletasks()
-            root.geometry("")
-
-            avance = 100 // len(descargas)
-            base = 0
-            for asset in descargas:
-                nombre = asset["name"]
-                url = asset["browser_download_url"]
-                destino = os.path.join(exe_dir, nombre)
-                logger.info(f"Descargando {nombre} desde {url} a {destino}")
-
-                try:
-                    urllib.request.urlretrieve(
-                        url,
-                        destino,
-                        reporthook=crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var)
-                    )
-                except Exception as e:
-                    logger.error(f"Error al descargar {nombre}: {e}")
-                    messagebox.showerror("Error", f"No se pudo descargar {nombre}. Intenta nuevamente.")
-                    return
-
-                base += avance
-
-            barra_progreso["value"] = 100
-            porcentaje_var.set("100%")
-            status_var.set("Actualización descargada correctamente.")
-            root.update_idletasks()
-            root.geometry("")
-
-            def ocultar():
-                status_var.set("")
-                frame_progreso.pack_forget()
-                status_label.pack_forget()
-                root.geometry("")
-
-            root.after(3000, ocultar)
-
-            nuevo_path = destino
-            logger.info(f"Lanzando nuevo ejecutable: {nuevo_path}")
-            messagebox.showinfo("Actualización", f"Se lanzará la nueva versión ({ultima_version}) ahora.")
-
-            try:
-                subprocess.Popen([nuevo_path])
-                actualizar_version_local(ultima_version)
-                logger.info(f"Archivo version.txt actualizado a v{ultima_version}")
-            except Exception as e:
-                logger.error(f"No se pudo lanzar la nueva versión: {e}")
-            finally:
-                logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN =====")
-                sys.exit()
+            # Llama a la función de descarga y reemplazo robusta
+            logger.info("Iniciando descarga y reemplazo del ejecutable...")
+            actualizar_version_local(ultima_version)
+            descargar_actualizacion()
 
     except Exception as e:
         logger.exception(f"Error al verificar actualización desde {URL_API}")
