@@ -59,16 +59,14 @@ del "%~f0"
         messagebox.showerror("Error", f"No se pudo descargar la actualización:\n{e}")
 
 def obtener_version_actual():
-    """
-    Obtiene la versión actual desde version.txt. Si no existe, lo crea con v0.0.0.
-    """
     os.makedirs("data", exist_ok=True)
     if not os.path.exists(VERSION_FILE):
         with open(VERSION_FILE, "w") as f:
             f.write("v0.0.0")
-        return "0.0.0"
+        return "v0.0.0"
     with open(VERSION_FILE, "r") as f:
-        return f.read().strip().lstrip("v")
+        return f.read().strip()
+
 
 def actualizar_version_local(nueva_version: str):
     """
@@ -107,7 +105,7 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
 
-        ultima_version = data["tag_name"].lstrip("v")
+        ultima_version = data["tag_name"]  # Conserva el tag completo (ej: 'v0.0.12' o 'build-10')
         assets = data["assets"]
         logger.info(f"Última versión disponible: {ultima_version}")
 
@@ -133,11 +131,10 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            nombre_exe_actual = os.path.basename(sys.argv[0])
-            asset_match = next((a for a in assets if a["name"] == nombre_exe_actual), None)
+            asset_match = next((a for a in assets if a["name"].lower() == "draftsender.exe"), None)
             if not asset_match:
-                logger.warning(f"No se encontró un archivo '{nombre_exe_actual}' en los assets del release.")
-                messagebox.showwarning("No disponible", f"No se encontró el archivo '{nombre_exe_actual}' para descargar.")
+                logger.warning("No se encontró el asset 'DraftSender.exe' en el release.")
+                messagebox.showwarning("No disponible", "No se encontró el archivo 'DraftSender.exe' para descargar.")
                 return
 
             actualizar_version_local(ultima_version)
