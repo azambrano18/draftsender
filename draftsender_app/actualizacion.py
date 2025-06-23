@@ -107,12 +107,6 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
 
-        nombre_exe_actual = os.path.basename(sys.argv[0])
-        if data.get("name") != nombre_exe_actual:
-            logger.warning(f"El release no coincide con el nombre esperado ({nombre_exe_actual}). Abortando.")
-            messagebox.showwarning("Versión incompatible", f"No se encontró un release que coincida con '{nombre_exe_actual}'.")
-            return
-
         ultima_version = data["tag_name"].lstrip("v")
         assets = data["assets"]
         logger.info(f"Última versión disponible: {ultima_version}")
@@ -139,10 +133,10 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            # Buscar asset que coincida exactamente con el nombre del ejecutable actual
+            nombre_exe_actual = os.path.basename(sys.argv[0])
             asset_match = next((a for a in assets if a["name"] == nombre_exe_actual), None)
             if not asset_match:
-                logger.warning("No se encontró un archivo .exe que coincida exactamente con el ejecutable actual.")
+                logger.warning(f"No se encontró un archivo '{nombre_exe_actual}' en los assets del release.")
                 messagebox.showwarning("No disponible", f"No se encontró el archivo '{nombre_exe_actual}' para descargar.")
                 return
 
