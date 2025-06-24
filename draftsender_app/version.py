@@ -1,24 +1,28 @@
 import re
 import os
-from draftsender_app.ui_utils import get_data_path
+import sys
 
 def obtener_version_local() -> str:
+    """
+    Devuelve la versión actual leyendo el archivo 'data/version.txt',
+    ya sea en entorno de desarrollo o desde ejecutable PyInstaller.
+    """
     try:
-        data_dir = get_data_path()
-        version_file = os.path.join(data_dir, "version.txt")
+        if hasattr(sys, '_MEIPASS'):
+            base_dir = sys._MEIPASS
+        else:
+            base_dir = os.path.abspath(".")
 
-        if os.path.exists(version_file):
-            with open(version_file, "r", encoding="utf-8") as f:
+        version_path = os.path.join(base_dir, "data", "version.txt")
+
+        if os.path.exists(version_path):
+            with open(version_path, "r", encoding="utf-8") as f:
                 version = f.read().strip()
                 if re.match(r"^v?\d+\.\d+\.\d+$", version):
                     return version
 
-        # Si no existe o es inválido, crear versión por defecto
-        os.makedirs(data_dir, exist_ok=True)
-        default_version = "1.0.0"
-        with open(version_file, "w", encoding="utf-8") as f:
-            f.write(default_version)
-        return default_version
+        # Si no existe o es inválido, usar valor por defecto
+        return "v"
 
     except Exception:
         return "versión desconocida"

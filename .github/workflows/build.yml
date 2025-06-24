@@ -33,10 +33,10 @@ jobs:
           New-Item -ItemType Directory -Force -Path draftsender_app/data
           "v${{ github.run_number }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
 
-      - name: Build with PyInstaller (nombre con versión)
+      - name: Compilar con PyInstaller (nombre versionado y assets correctos)
         run: |
           pyinstaller --noconfirm --onefile --windowed `
-          --name "DraftSender v${{ github.run_number }}" `
+          --name "DraftSender_v${{ github.run_number }}" `
           --icon draftsender_app/config/icon.ico `
           --add-data "draftsender_app/config/cover.jpg;config" `
           --add-data "draftsender_app/data/version.txt;data" `

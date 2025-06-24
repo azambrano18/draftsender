@@ -110,7 +110,10 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 return
 
             nombre_esperado = f"DraftSender_{ultima_version}.exe"
-            asset_match = next((a for a in assets if a["name"].strip() == nombre_esperado), None)
+            asset_match = next(
+                (a for a in assets if a["name"].lower().startswith("draftsender_v") and a["name"].endswith(".exe")),
+                None
+            )
 
             if not asset_match:
                 logger.warning(f"No se encontró el asset '{nombre_esperado}' en el release.")
