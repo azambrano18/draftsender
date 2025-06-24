@@ -4,6 +4,9 @@ import tkinter as tk
 import psutil
 import re
 import logging
+import os
+import sys
+import requests
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from draftsender_app.envios_ui import lanzar_envio_desde_gui
@@ -683,78 +686,6 @@ def obtener_nombre_usuario():
         with open(ruta_usuario, "r", encoding="utf-8") as f: nombre = f.read().strip()
 
     return nombre
-
-import os
-import sys
-import requests
-
-def verificar_y_descargar_actualizacion():
-    """
-    Verifica si existe una nueva versión publicada en GitHub y la descarga si es más reciente.
-    """
-    try:
-        version_local = "v0.0.0"
-        ruta_version_local = os.path.join("data", "version.txt")
-        if os.path.exists(ruta_version_local):
-            with open(ruta_version_local, "r", encoding="utf-8") as f:
-                version_local = f.read().strip()
-
-        # Obtener release más reciente desde GitHub
-        url_api = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
-        respuesta = requests.get(url_api, timeout=10)
-        if respuesta.status_code != 200:
-            print("No se pudo obtener información del release.")
-            return
-
-        data = respuesta.json()
-        version_remota = data["tag_name"]  # ejemplo: "v13"
-        nombre_ultimo_exe = next(
-            (asset["name"] for asset in data["assets"] if asset["name"].endswith(".exe")), None
-        )
-        url_descarga = next(
-            (asset["browser_download_url"] for asset in data["assets"] if asset["name"].endswith(".exe")), None
-        )
-
-        if not url_descarga or not nombre_ultimo_exe:
-            print("No se encontró archivo ejecutable en el último release.")
-            return
-
-        print(f"Versión local: {version_local} / Última versión: {version_remota}")
-        if version_remota == version_local:
-            print("La aplicación ya está actualizada.")
-            return
-
-        print("Nueva versión disponible. Descargando...")
-        response = requests.get(url_descarga, stream=True, timeout=60)
-        ruta_destino = os.path.abspath(nombre_ultimo_exe)
-        with open(ruta_destino, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-
-        print(f"Descarga completa: {ruta_destino}")
-
-        # Lanza updater y cierra app actual
-        lanzar_updater(nombre_ultimo_exe, version_remota)
-
-    except Exception as e:
-        print(f"Error durante la verificación de actualización: {e}")
-
-import subprocess
-
-def lanzar_updater(nuevo_exe: str, nueva_version: str):
-    """
-    Lanza el actualizador (updater.py) pasándole el nombre del nuevo exe y la nueva versión.
-    """
-    script_updater = "updater.py"
-    if not os.path.exists(script_updater):
-        print("Falta updater.py")
-        return
-
-    subprocess.Popen([
-        sys.executable, script_updater, nuevo_exe, nueva_version
-    ])
-    sys.exit()
 
 if __name__ == "__main__":
     import tkinter as tk

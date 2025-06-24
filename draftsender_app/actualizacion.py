@@ -5,12 +5,13 @@ import ssl
 import certifi
 import time
 import logging
-import urllib.request
 import shutil
 import os
 import subprocess
-from draftsender_app import logger_utils as logger
 from tkinter import messagebox
+
+from draftsender_app.version import obtener_version_local
+from draftsender_app import logger_utils as logger
 
 logger = logging.getLogger("DraftSender")
 
@@ -24,10 +25,9 @@ def descargar_actualizacion(url: str, nueva_version: str):
     """
     try:
         carpeta = os.path.dirname(sys.argv[0])
-        nuevo_nombre = f"DraftSender v{nueva_version}.exe"
+        nuevo_nombre = f"DraftSender {nueva_version}.exe"
         ruta_nuevo = os.path.join(carpeta, nuevo_nombre)
 
-        # Descargar el nuevo .exe
         with urllib.request.urlopen(url) as response, open(ruta_nuevo, 'wb') as out_file:
             shutil.copyfileobj(response, out_file)
 
@@ -36,9 +36,8 @@ def descargar_actualizacion(url: str, nueva_version: str):
 
         logger.info(f"Nuevo ejecutable descargado: {ruta_nuevo}")
 
-        # Crear o actualizar version.txt
         os.makedirs("data", exist_ok=True)
-        with open(os.path.join("data", "version.txt"), "w", encoding="utf-8") as f:
+        with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
 
         messagebox.showinfo(
@@ -53,24 +52,11 @@ def descargar_actualizacion(url: str, nueva_version: str):
         logger.error(f"Error en actualización: {e}")
         messagebox.showerror("Error", f"No se pudo completar la actualización:\n{e}")
 
-def obtener_version_actual():
-    os.makedirs("data", exist_ok=True)
-    if not os.path.exists(VERSION_FILE):
-        with open(VERSION_FILE, "w") as f:
-            f.write("v0.0.0")
-        return "v0.0.0"
-    with open(VERSION_FILE, "r") as f:
-        return f.read().strip()
-
 def actualizar_version_local(nueva_version: str):
     with open(VERSION_FILE, "w", encoding="utf-8") as f:
         f.write(nueva_version)
 
-
 def crear_hook(base, avance, barra_progreso, porcentaje_var, root, status_var):
-    """
-    Hook para mostrar progreso de descarga con urllib.request.urlretrieve
-    """
     inicio = time.time()
 
     def hook(count, block_size, total_size):
@@ -97,11 +83,11 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
 
-        ultima_version = data["tag_name"].strip()  # Ej: 'v1.0.3'
+        ultima_version = data["tag_name"].strip()
         assets = data["assets"]
         logger.info(f"Última versión disponible: {ultima_version}")
 
-        version_local = obtener_version_actual()
+        version_local = obtener_version_local()
         if not forzar and version_local == ultima_version:
             logger.info("Ya tienes la última versión.")
             status_var.set("Ya tienes la última versión instalada.")
@@ -123,9 +109,8 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            # Buscar el asset cuyo nombre coincida con el formato 'DraftSender vX.Y.Z.exe'
-            nombre_esperado = f"draftsender v{ultima_version.strip().lower()}.exe"
-            asset_match = next((a for a in assets if a["name"].strip().lower() == nombre_esperado), None)
+            nombre_esperado = f"DraftSender {ultima_version}.exe"
+            asset_match = next((a for a in assets if a["name"].strip() == nombre_esperado), None)
 
             if not asset_match:
                 logger.warning(f"No se encontró el asset '{nombre_esperado}' en el release.")
@@ -146,17 +131,13 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
         logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (error inesperado) =====")
 
 def verificar_version_disponible():
-    """
-    Compara la versión local con la versión más reciente publicada en GitHub.
-    Retorna True si hay una versión nueva disponible.
-    """
     try:
         context = ssl.create_default_context(cafile=certifi.where())
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
-            ultima_version = data["tag_name"].lstrip("v")
+            ultima_version = data["tag_name"].strip()
 
-        version_local = obtener_version_actual()
+        version_local = obtener_version_local()
         return version_local != ultima_version
 
     except Exception as e:

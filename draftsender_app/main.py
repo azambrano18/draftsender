@@ -1,6 +1,9 @@
 import re
 import atexit
 import subprocess
+import glob
+import os
+import sys
 from tkinter import Tk, Toplevel, Label, Entry, Button, messagebox
 from draftsender_app.logger_utils import configurar_logger
 from draftsender_app.gui import DraftSenderApp
@@ -102,14 +105,9 @@ logger = None  # declaración global segura para usar en except
 def correo_valido(correo: str) -> bool:
     return bool(re.match(r"^[\w\.-]+@mejoreferido\.cl$", correo))
 
-import os
-import sys
-import time
-import glob
-
 def eliminar_version_anterior_si_es_necesario():
     """
-    Si este ejecutable es 'DraftSender vX.Y.Z.exe', elimina cualquier otra 'DraftSender v*.exe'
+    Si este ejecutable es 'DraftSender vX.Y.Z.exe', elimina cualquier otro 'DraftSender v*.exe'
     excepto a sí mismo. No toca la carpeta 'data'.
     """
     exe_actual = os.path.abspath(sys.argv[0])
@@ -128,13 +126,11 @@ def eliminar_version_anterior_si_es_necesario():
             except Exception as e:
                 print(f"Error al eliminar {exe}: {e}")
 
-eliminar_version_anterior_si_es_necesario()
-
 def main() -> None:
     """
     Función principal que inicializa la aplicación DraftSender con manejo robusto de errores.
     """
-    eliminar_ejecutable_anterior_si_es_necesario()
+    eliminar_version_anterior_si_es_necesario()
 
     global logger
 
@@ -175,7 +171,6 @@ def main() -> None:
         # Paso 4: Configurar GUI
         version = obtener_version_local()
         titulo_app = f"DraftSender {version} - {nombre_usuario}"
-
         root.title(titulo_app)
 
         try:
