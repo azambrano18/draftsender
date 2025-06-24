@@ -31,14 +31,15 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path draftsender_app/data
-          "${{ github.run_number }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
+          "v${{ github.run_number }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
 
-      - name: Build with PyInstaller
+      - name: Build with PyInstaller (nombre con versión)
         run: |
           pyinstaller --noconfirm --onefile --windowed `
-          --name DraftSender `
+          --name "DraftSender v${{ github.run_number }}" `
           --icon draftsender_app/config/icon.ico `
           --add-data "draftsender_app/config/cover.jpg;config" `
+          --add-data "draftsender_app/data/version.txt;data" `
           --paths . `
           --hidden-import=requests `
           --hidden-import=psutil `
@@ -47,18 +48,18 @@ jobs:
           --hidden-import=pywinauto `
           draftsender_app/main.py
 
-      - name: Upload artifact
+      - name: Upload artifact (nombre exacto con versión)
         uses: actions/upload-artifact@v4
         with:
           name: DraftSender
-          path: dist/DraftSender.exe
+          path: dist/DraftSender v${{ github.run_number }}.exe
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (con archivo .exe)
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.run_number }}
-          name: DraftSender
+          tag_name: v${{ github.run_number }}
+          name: DraftSender v${{ github.run_number }}
           body: "Release automático generado desde push a main."
-          files: dist/DraftSender.exe
+          files: dist/DraftSender v${{ github.run_number }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
