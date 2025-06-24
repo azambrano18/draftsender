@@ -6,7 +6,6 @@ import re
 import logging
 import os
 import sys
-import requests
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from draftsender_app.envios_ui import lanzar_envio_desde_gui

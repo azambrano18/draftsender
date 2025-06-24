@@ -1,8 +1,6 @@
 import os
 import sys
 import time
-import shutil
-import subprocess
 
 def main():
     if len(sys.argv) != 3:

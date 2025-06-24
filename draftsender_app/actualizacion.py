@@ -109,7 +109,7 @@ def verificar_actualizacion(root, barra_progreso, porcentaje_var, frame_progreso
                 logger.info("===== FIN DE PROCESO DE ACTUALIZACIÓN (modo desarrollo) =====")
                 return
 
-            nombre_esperado = f"DraftSender {ultima_version}.exe"
+            nombre_esperado = f"DraftSender_{ultima_version}.exe"
             asset_match = next((a for a in assets if a["name"].strip() == nombre_esperado), None)
 
             if not asset_match:
