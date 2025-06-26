@@ -53,6 +53,6 @@ jobs:
         with:
           name: DraftSender ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
-          files: dist/DraftSender_v${{ github.ref_name }}.exe
+          files: dist/DraftSender_${{ github.ref_name }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
