@@ -48,15 +48,17 @@ def descargar_actualizacion(url: str, nueva_version: str, nombre_exe: str):
 
 def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
     try:
-        exe_actual = os.path.basename(sys.executable)
-        cerrar_procesos_relacionados(exe_actual)
+        exe_actual = sys.executable
+        cerrar_procesos_relacionados(os.path.basename(exe_actual))
         time.sleep(1)
 
-        # ✅ Asegura que la carpeta 'data/' exista antes de escribir version.txt
+        # Guardar versión actual
         os.makedirs(os.path.dirname(VERSION_FILE), exist_ok=True)
-
         with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
+
+        # Mover el ejecutable actual a /versiones antes de salir
+        mover_a_versiones(exe_actual, obtener_version_local())
 
         messagebox.showinfo(
             "Actualización completada",
@@ -93,7 +95,7 @@ def ejecutar_actualizacion(forzar=False):
             messagebox.showinfo("Modo desarrollo", "No se puede actualizar automáticamente en modo desarrollo.")
             return
 
-        # ✅ Corrección: remueve el prefijo "v" para buscar bien el ejecutable
+        # Corrección: remueve el prefijo "v" para buscar bien el ejecutable
         nombre_esperado = f"{EXE_NAME_PREFIX}{ultima_version.lstrip('v')}.exe"
 
         asset_match = next(
@@ -127,3 +129,18 @@ def hay_nueva_version_disponible() -> bool:
     except Exception as e:
         logger.warning(f"No se pudo verificar la versión disponible: {e}")
         return False
+
+def mover_a_versiones(exe_actual: str, version_local: str):
+    try:
+        carpeta_base = os.path.dirname(sys.argv[0])
+        carpeta_versiones = os.path.join(carpeta_base, "versiones")
+        os.makedirs(carpeta_versiones, exist_ok=True)
+
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        nombre_archivo = f"{os.path.basename(exe_actual).replace('.exe', '')}_{version_local}_{timestamp}.exe"
+        destino = os.path.join(carpeta_versiones, nombre_archivo)
+
+        shutil.move(exe_actual, destino)
+        logger.info(f"Ejecutable anterior movido a: {destino}")
+    except Exception as e:
+        logger.warning(f"No se pudo mover el ejecutable antiguo a carpeta de versiones: {e}")

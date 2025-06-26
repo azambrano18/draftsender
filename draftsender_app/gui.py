@@ -14,7 +14,6 @@ from draftsender_app.archivos import cargar_excel, cargar_docx, validar_excel_gu
 from draftsender_app.outlook_utils import obtener_cuentas_activas, obtener_perfiles_outlook, cerrar_outlook, iniciar_outlook_con_perfil
 from draftsender_app.actualizacion import ejecutar_actualizacion, hay_nueva_version_disponible
 
-
 logger = logging.getLogger("DraftSender")
 
 class DraftSenderApp:
