@@ -1,16 +1,14 @@
-name: Build DraftSender EXE
+name: Build & Release DraftSender
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:  # ejecución manual desde GitHub Actions
+
+permissions:
+  contents: write  # requerido para crear releases y subir assets
 
 jobs:
   build:
     runs-on: windows-latest
-
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repo
@@ -48,18 +46,11 @@ jobs:
           --hidden-import=pywinauto `
           draftsender_app/main.py
 
-      - name: Upload artifact (nombre exacto con versión)
-        uses: actions/upload-artifact@v4
-        with:
-          name: DraftSender
-          path: dist/DraftSender_v${{ github.run_number }}.exe
-
-      - name: Create GitHub Release (con archivo .exe)
+      - name: Crear GitHub Release y subir ejecutable
         uses: softprops/action-gh-release@v1
         with:
+          name: DraftSender v${{ github.run_number }}
           tag_name: v${{ github.run_number }}
-          name: DraftSender_v${{ github.run_number }}
-          body: "Release automático generado desde push a main."
           files: dist/DraftSender_v${{ github.run_number }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

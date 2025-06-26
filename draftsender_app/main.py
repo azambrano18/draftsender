@@ -9,7 +9,6 @@ from draftsender_app.logger_utils import configurar_logger
 from draftsender_app.gui import DraftSenderApp
 from draftsender_app.ui_utils import get_data_path
 from draftsender_app.version import obtener_version_local
-from draftsender_app.elimina_v_anterior import eliminar_ejecutable_anterior_si_es_necesario
 
 def abrir_outlook_clasico():
     """
@@ -114,10 +113,10 @@ def eliminar_version_anterior_si_es_necesario():
     nombre_actual = os.path.basename(exe_actual)
     carpeta = os.path.dirname(exe_actual)
 
-    if not nombre_actual.lower().startswith("draftsender v") or not nombre_actual.lower().endswith(".exe"):
+    if not nombre_actual.lower().startswith("draftsender_v") or not nombre_actual.lower().endswith(".exe"):
         return  # No está en formato de versión numerada
 
-    for exe in glob.glob(os.path.join(carpeta, "DraftSender v*.exe")):
+    for exe in glob.glob(os.path.join(carpeta, "DraftSender_v*.exe")):
         exe_path = os.path.abspath(exe)
         if exe_path != exe_actual:
             try:

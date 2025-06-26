@@ -1,16 +1,19 @@
 import time
-import threading
 import tkinter as tk
 import psutil
 import re
 import logging
 import os
 import sys
+import threading
+
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from draftsender_app.envios_ui import lanzar_envio_desde_gui
 from draftsender_app.archivos import cargar_excel, cargar_docx, validar_excel_gui
 from draftsender_app.outlook_utils import obtener_cuentas_activas, obtener_perfiles_outlook, cerrar_outlook, iniciar_outlook_con_perfil
+from draftsender_app.actualizacion import ejecutar_actualizacion, hay_nueva_version_disponible
+
 
 logger = logging.getLogger("DraftSender")
 
@@ -93,9 +96,6 @@ class DraftSenderApp:
         - Archivo: Actualizar, Salir
         - Ayuda: Ver instructivo (README), Acerca de
         """
-        import threading
-        from draftsender_app.actualizacion import verificar_version_disponible
-
         menu_bar = tk.Menu(self.root)
 
         menu_archivo = tk.Menu(menu_bar, tearoff=0)
@@ -116,7 +116,7 @@ class DraftSenderApp:
 
         # Verifica si hay una nueva versión en segundo plano
         def habilitar_si_hay_actualizacion():
-            if verificar_version_disponible():
+            if hay_nueva_version_disponible():
                 self.root.after(0, lambda: self.menu_archivo.entryconfig("Actualizar", state="normal"))
 
         threading.Thread(target=habilitar_si_hay_actualizacion, daemon=True).start()
@@ -536,19 +536,8 @@ class DraftSenderApp:
             pass
 
     def actualizar_aplicacion_intermedia(self):
-        """
-        Lanza el proceso completo de verificación y descarga de actualización.
-        """
-        from draftsender_app.actualizacion import verificar_actualizacion
-        verificar_actualizacion(
-            self.root,
-            self.barra_progreso,
-            self.porcentaje_var,
-            self.frame_progreso,
-            self.status_label,
-            self.status_var,
-            forzar=True
-        )
+        import threading
+        threading.Thread(target=lambda: ejecutar_actualizacion(forzar=True), daemon=True).start()
 
     def mostrar_acerca_de(self):
         """
