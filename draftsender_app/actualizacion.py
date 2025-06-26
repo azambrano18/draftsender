@@ -52,6 +52,9 @@ def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
         cerrar_procesos_relacionados(exe_actual)
         time.sleep(1)
 
+        # ✅ Asegura que la carpeta 'data/' exista antes de escribir version.txt
+        os.makedirs(os.path.dirname(VERSION_FILE), exist_ok=True)
+
         with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
 

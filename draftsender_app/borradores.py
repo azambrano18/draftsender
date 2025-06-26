@@ -5,7 +5,6 @@ import mammoth
 import logging
 import warnings
 import win32com.client
-import pythoncom
 from tkinter import messagebox
 from draftsender_app.validaciones import es_email_valido, validar_columnas_obligatorias
 
@@ -286,7 +285,7 @@ def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str
         perfil (str): Perfil de Outlook a usar.
         ruta_excel (str): Ruta al archivo Excel.
         ruta_docx (str): Ruta al archivo Word.
-        modo_envio (str): "Envíos 1" o "Seguimiento".
+        modo_envio (str): "Envíos 1", "Reenviados 2", "Reenviados 3".
         callback_progreso (func, optional): Función para actualizar progreso.
 
     Returns:
@@ -336,7 +335,12 @@ def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str
             variables["Disponibilidad"] = str(valor_disponibilidad).strip()
             cuerpo_html = cargar_cuerpo_desde_docx(ruta_docx, variables)
 
-            if modo_envio == "Seguimiento":
+            # Insertar marcador oculto automáticamente si corresponde
+            if modo_envio.lower() in ("reenviados 2", "reenviados 3"):
+                tipo_marcador = modo_envio.lower().replace(" ", "")
+                cuerpo_html += f"\n<!--tipo_envio:{tipo_marcador}-->"
+
+            if modo_envio.lower() in ("reenviados 2", "reenviados 3"):
                 exito = crear_borrador_respuesta(cuenta, destinatario, cuerpo_html, perfil_outlook=perfil)
             else:
                 exito = crear_borrador(cuenta, destinatario, asunto, cuerpo_html, perfil_outlook=perfil)
@@ -365,5 +369,3 @@ def generar_borradores(cuenta: str, perfil: str, ruta_excel: str, ruta_docx: str
         mensaje_final = f"Se crearon {enviados} borradores correctamente."
 
     return enviados, errores, mensaje_final
-
-# pr

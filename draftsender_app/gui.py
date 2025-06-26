@@ -184,7 +184,7 @@ class DraftSenderApp:
             self.metodo_envio_var = tk.StringVar()
             self.metodo_envio_var.trace_add("write", self.log_metodo_seleccionado)  # Conecta trazabilidad
 
-            opciones = ["Selecciona método", "Envíos 1", "Seguimiento"]
+            opciones = ["Selecciona método", "Envíos 1", "Reenviados 2", "Reenviados 3"]
             self.combo_metodo = ttk.Combobox(frame_selector,textvariable=self.metodo_envio_var,values=opciones,font=("Arial", 10),state="disabled",width=20)
             self.combo_metodo.grid(row=1, column=2, sticky="w", padx=(10, 0))
             self.combo_metodo.current(0)
@@ -193,14 +193,11 @@ class DraftSenderApp:
             logger.error("Error al crear selector de método de envío", exc_info=True)
 
     def log_metodo_seleccionado(self, *_args):
-        """
-            Callback que se ejecuta cuando el usuario cambia el metodo de envío.
-            Habilita o deshabilita los botones de carga de archivos según el valor seleccionado.
-            También valida si se puede activar el botón de crear borradores.
-            """
         metodo = self.metodo_envio_var.get()
 
         if metodo != "Selecciona método":
+            logger.info(f"Método de envío: {metodo}")
+
             if self.boton_cargar_excel and self.boton_cargar_excel.winfo_exists():
                 self.boton_cargar_excel.config(state="normal")
             if self.boton_cargar_docx and self.boton_cargar_docx.winfo_exists():

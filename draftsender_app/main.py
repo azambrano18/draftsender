@@ -9,6 +9,7 @@ from draftsender_app.logger_utils import configurar_logger
 from draftsender_app.gui import DraftSenderApp
 from draftsender_app.ui_utils import get_data_path
 from draftsender_app.version import obtener_version_local
+from draftsender_app.ui_utils import centrar_ventana
 
 def abrir_outlook_clasico():
     """
@@ -47,8 +48,8 @@ def solicitar_nombre_usuario(root: Tk) -> str:
 
     ventana = Toplevel(root)
     ventana.title("¡Bienvenido a DraftSender!")
-    ventana.geometry("400x180")
     ventana.resizable(False, False)
+    centrar_ventana(ventana, 400, 180)
     ventana.grab_set()
 
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))

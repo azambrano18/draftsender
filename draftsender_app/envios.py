@@ -152,15 +152,14 @@ def enviar_borradores(perfil: str) -> tuple[int, list[str], str]:
                 item.Send()
                 enviados += 1
 
-                # LOG: información básica del correo
                 logger.info(f"[{perfil}] Enviado a: {item.To}")
                 logger.info(f"[{perfil}] Asunto: {item.Subject}")
 
-                # Intentar leer tanto texto como HTML
+                # Leer contenido combinado
                 cuerpo = (item.Body or "") + (item.HTMLBody or "")
                 logger.debug(f"[{perfil}] Cuerpo combinado: {cuerpo[:500]}")
 
-                # Buscar URL con tracking
+                # Buscar URL de tracking
                 match = re.search(r'https://[^\s"<>]+/click\?[^"\s<>]+', cuerpo)
                 url_destino = match.group(0) if match else None
 
@@ -173,6 +172,15 @@ def enviar_borradores(perfil: str) -> tuple[int, list[str], str]:
                 logger.info(f"[{perfil}] URL destino encontrada: {url_destino}")
                 logger.info(f"[{perfil}] Token extraído: {token}")
 
+                # Detectar tipo de envío desde marcador HTML oculto
+                tipo_envio = "envio1"  # por defecto
+                if "<!--tipo_envio:reenviados2-->" in cuerpo:
+                    tipo_envio = "reenviados2"
+                elif "<!--tipo_envio:reenviados3-->" in cuerpo:
+                    tipo_envio = "reenviados3"
+                elif item.Subject.lower().startswith("re:"):
+                    tipo_envio = "seguimiento"
+
                 # Validación mínima antes de registrar
                 if not url_destino or not token:
                     logger.warning(f"[{perfil}] No se pudo extraer URL o token del correo a {item.To}")
@@ -180,10 +188,7 @@ def enviar_borradores(perfil: str) -> tuple[int, list[str], str]:
                     print("Asunto:", item.Subject)
                     print("Cuerpo detectado:")
                     print(cuerpo[:500])
-                    continue  # Salta al siguiente sin registrar
-
-                # Detectar tipo de envío
-                tipo_envio = "seguimiento" if item.Subject.lower().startswith("re:") else "envio1"
+                    continue
 
                 # Registrar en base de datos
                 registrar_envio(

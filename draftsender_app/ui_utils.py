@@ -52,3 +52,19 @@ def get_data_path():
     os.makedirs(data_dir, exist_ok=True)
 
     return data_dir
+
+def centrar_ventana(ventana, ancho: int, alto: int):
+    """
+    Centra una ventana de Tkinter en la pantalla principal.
+
+    Args:
+        ventana: Instancia de la ventana (Tk o Toplevel).
+        ancho (int): Ancho deseado en píxeles.
+        alto (int): Alto deseado en píxeles.
+    """
+    ventana.update_idletasks()
+    screen_width = ventana.winfo_screenwidth()
+    screen_height = ventana.winfo_screenheight()
+    x = (screen_width // 2) - (ancho // 2)
+    y = (screen_height // 2) - (alto // 2)
+    ventana.geometry(f"{ancho}x{alto}+{x}+{y}")
