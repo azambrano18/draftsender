@@ -75,7 +75,7 @@ def ejecutar_actualizacion(forzar=False):
         with urllib.request.urlopen(URL_API, context=context) as response:
             data = json.loads(response.read())
 
-        ultima_version = data["tag_name"].strip()
+        ultima_version = data["tag_name"].strip()  # Ej: "v1.0.0"
         assets = data["assets"]
         version_local = obtener_version_local()
 
@@ -90,7 +90,9 @@ def ejecutar_actualizacion(forzar=False):
             messagebox.showinfo("Modo desarrollo", "No se puede actualizar automáticamente en modo desarrollo.")
             return
 
-        nombre_esperado = f"{EXE_NAME_PREFIX}{ultima_version}.exe"
+        # ✅ Corrección: remueve el prefijo "v" para buscar bien el ejecutable
+        nombre_esperado = f"{EXE_NAME_PREFIX}{ultima_version.lstrip('v')}.exe"
+
         asset_match = next(
             (a for a in assets if a["name"].lower() == nombre_esperado.lower()),
             None

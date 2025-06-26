@@ -1,10 +1,12 @@
 name: Build & Release DraftSender
 
 on:
-  workflow_dispatch:  # ejecución manual desde GitHub Actions
+  push:
+    tags:
+      - 'v*'  # Ejecuta solo con git tag v1.0.0, etc.
 
 permissions:
-  contents: write  # requerido para crear releases y subir assets
+  contents: write  # necesario para crear releases y subir assets
 
 jobs:
   build:
@@ -25,16 +27,16 @@ jobs:
           pip install pyinstaller
           pip install pandas openpyxl pywin32 psutil mammoth python-docx pytz psycopg2 requests Pillow dnspython pywinauto
 
-      - name: Escribir version.txt con run_number
+      - name: Escribir version.txt con tag actual
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path draftsender_app/data
-          "v${{ github.run_number }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
+          "${{ github.ref_name }}" | Out-File -Encoding utf8 draftsender_app/data/version.txt
 
       - name: Compilar con PyInstaller (nombre versionado y assets correctos)
         run: |
           pyinstaller --noconfirm --onefile --windowed `
-          --name "DraftSender_v${{ github.run_number }}" `
+          --name "DraftSender_v${{ github.ref_name }}" `
           --icon draftsender_app/config/icon.ico `
           --add-data "draftsender_app/config/cover.jpg;config" `
           --add-data "draftsender_app/data/version.txt;data" `
@@ -49,8 +51,8 @@ jobs:
       - name: Crear GitHub Release y subir ejecutable
         uses: softprops/action-gh-release@v1
         with:
-          name: DraftSender v${{ github.run_number }}
-          tag_name: v${{ github.run_number }}
-          files: dist/DraftSender_v${{ github.run_number }}.exe
+          name: DraftSender ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: dist/DraftSender_v${{ github.ref_name }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
