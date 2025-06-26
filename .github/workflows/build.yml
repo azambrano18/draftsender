@@ -36,7 +36,7 @@ jobs:
       - name: Compilar con PyInstaller (nombre versionado y assets correctos)
         run: |
           pyinstaller --noconfirm --onefile --windowed `
-          --name "DraftSender_v${{ github.ref_name }}" `
+          --name "DraftSender_${{ github.ref_name }}" `
           --icon draftsender_app/config/icon.ico `
           --add-data "draftsender_app/config/cover.jpg;config" `
           --add-data "draftsender_app/data/version.txt;data" `
