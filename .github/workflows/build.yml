@@ -3,7 +3,7 @@ name: Build & Release DraftSender
 on:
   push:
     tags:
-      - 'v*'  # Ejecuta solo con git tag v1.0.0, etc.
+      - 'v*'  # Ejecuta solo con git tag v1.0.0, etc
 
 permissions:
   contents: write  # necesario para crear releases y subir assets
