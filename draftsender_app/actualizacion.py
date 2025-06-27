@@ -49,28 +49,38 @@ def descargar_actualizacion(url: str, nueva_version: str, nombre_exe: str):
 def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
     try:
         exe_actual = sys.executable
+
+        # Cerrar instancias activas
         cerrar_procesos_relacionados(os.path.basename(exe_actual))
         time.sleep(1)
 
-        # Guardar versión actual
+        # Crear carpeta /data/versiones si no existe
+        carpeta_versiones = os.path.join("data", "versiones")
+        os.makedirs(carpeta_versiones, exist_ok=True)
+
+        # Mover el ejecutable actual a /data/versiones/
+        nombre_actual = os.path.basename(exe_actual)
+        destino = os.path.join(carpeta_versiones, nombre_actual)
+        try:
+            shutil.move(exe_actual, destino)
+        except Exception as e:
+            logger.warning(f"No se pudo mover el ejecutable actual: {e}")
+
+        # Guardar nueva versión en data/version.txt
         os.makedirs(os.path.dirname(VERSION_FILE), exist_ok=True)
         with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
 
-        # Mover el ejecutable actual a /versiones antes de salir
-        mover_a_versiones(exe_actual, obtener_version_local())
+        # Mover el nuevo ejecutable a la ruta del actual
+        shutil.move(ruta_nuevo_exe, exe_actual)
 
-        messagebox.showinfo(
-            "Actualización completada",
-            f"La nueva versión {nueva_version} fue descargada.\nLa app se cerrará para actualizar."
-        )
-
-        subprocess.Popen([ruta_nuevo_exe], shell=True)
+        # Reiniciar aplicación
+        subprocess.Popen([exe_actual], close_fds=True)
         sys.exit(0)
 
     except Exception as e:
-        logger.error(f"Error al reemplazar y reiniciar: {e}")
-        messagebox.showerror("Error", f"No se pudo completar la actualización:\n{e}")
+        logger.error(f"Error durante reemplazo y reinicio: {e}")
+        messagebox.showerror("Actualización", f"Ocurrió un error al actualizar la aplicación:\n{e}")
 
 def ejecutar_actualizacion(forzar=False):
     try:
@@ -130,17 +140,12 @@ def hay_nueva_version_disponible() -> bool:
         logger.warning(f"No se pudo verificar la versión disponible: {e}")
         return False
 
-def mover_a_versiones(exe_actual: str, version_local: str):
-    try:
-        carpeta_base = os.path.dirname(sys.argv[0])
-        carpeta_versiones = os.path.join(carpeta_base, "versiones")
-        os.makedirs(carpeta_versiones, exist_ok=True)
+def crear_carpeta_versiones():
+    ruta = os.path.join("data", "versiones")
+    os.makedirs(ruta, exist_ok=True)
 
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        nombre_archivo = f"{os.path.basename(exe_actual).replace('.exe', '')}_{version_local}_{timestamp}.exe"
-        destino = os.path.join(carpeta_versiones, nombre_archivo)
-
-        shutil.move(exe_actual, destino)
-        logger.info(f"Ejecutable anterior movido a: {destino}")
-    except Exception as e:
-        logger.warning(f"No se pudo mover el ejecutable antiguo a carpeta de versiones: {e}")
+def mover_exe_antiguo(exe_actual):
+    crear_carpeta_versiones()
+    nombre = os.path.basename(exe_actual)
+    destino = os.path.join("data", "versiones", nombre)
+    shutil.move(exe_actual, destino)
