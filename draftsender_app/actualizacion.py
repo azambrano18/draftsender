@@ -21,13 +21,16 @@ EXE_NAME_PREFIX = "DraftSender_v"
 
 def cerrar_procesos_relacionados(nombre_exe):
     current_pid = os.getpid()
-    for proc in psutil.process_iter(['pid', 'name']):
-        if proc.info['pid'] != current_pid and nombre_exe.lower() in proc.info['name'].lower():
-            try:
+    for proc in psutil.process_iter(['pid', 'name', 'exe']):
+        try:
+            if proc.info['pid'] != current_pid and nombre_exe.lower() in proc.info['name'].lower():
                 proc.terminate()
-                proc.wait(timeout=5)
-            except Exception:
-                pass
+                try:
+                    proc.wait(timeout=5)
+                except psutil.TimeoutExpired:
+                    proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
 
 def descargar_actualizacion(url: str, nueva_version: str, nombre_exe: str):
     try:
