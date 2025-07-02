@@ -3,10 +3,10 @@ name: Build & Release DraftSender
 on:
   push:
     tags:
-      - 'v*'  # Ejecuta solo con git tag v1.0.0, etc.
+      - 'v*'  # Ejecuta solo con tags tipo v1.0.0
 
 permissions:
-  contents: write  # necesario para crear releases y subir assets
+  contents: write  # Necesario para crear releases y subir assets
 
 jobs:
   build:
@@ -21,11 +21,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install PyInstaller and required libraries
+      - name: Install PyInstaller and dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
-          pip install pandas openpyxl pywin32 psutil mammoth python-docx pytz psycopg2 requests Pillow dnspython pywinauto python-dotenv
+          pip install -r requirements.txt
 
       - name: Escribir version.txt con tag actual
         shell: pwsh
@@ -46,6 +46,7 @@ jobs:
           --hidden-import=PIL `
           --hidden-import=dns `
           --hidden-import=pywinauto `
+          --hidden-import=dotenv `
           draftsender_app/main.py
 
       - name: Crear GitHub Release y subir ejecutable

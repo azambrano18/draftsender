@@ -7,3 +7,7 @@ mammoth
 python-docx
 pytz
 psycopg2
+Pillow
+dnspython
+pywinauto
+python-dotenv
