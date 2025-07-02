@@ -331,7 +331,7 @@ def generar_borradores(
             variables["Disponibilidad"] = str(valor_disponibilidad).strip()
             cuerpo_html = cargar_cuerpo_desde_docx(ruta_docx, variables)
 
-            # Determinar método de envío
+            # Determinar metodo de envío
             if modo_envio.lower() in ("reenviados 2", "reenviados 3"):
                 metodo_envio = "Reenvio2" if "2" in modo_envio else "Reenvio3"
             else:
