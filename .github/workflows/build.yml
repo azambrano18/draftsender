@@ -25,7 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
-          pip install pandas openpyxl pywin32 psutil mammoth python-docx pytz psycopg2 requests Pillow dnspython pywinauto
+          pip install pandas openpyxl pywin32 psutil mammoth python-docx pytz psycopg2 requests Pillow dnspython pywinauto python-dotenv
 
       - name: Escribir version.txt con tag actual
         shell: pwsh
