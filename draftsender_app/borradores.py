@@ -83,9 +83,6 @@ def crear_borrador(
     import psutil
     import pythoncom
     from datetime import datetime
-    from urllib.parse import quote
-    import hashlib
-    import re
     import win32com.client
 
     def outlook_responde() -> bool:
@@ -93,40 +90,6 @@ def crear_borrador(
             if proc.info['name'] and "outlook.exe" in proc.info['name'].lower():
                 return True
         return False
-
-    def generar_token(remitente: str, destinatario: str, url: str, secreto: str = "clave-secreta") -> str:
-        base = f"{remitente}-{destinatario}-{url}-{secreto}"
-        return hashlib.sha256(base.encode()).hexdigest()
-
-    def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario: str, timestamp: str) -> str:
-        from html import unescape
-        from urllib.parse import quote
-
-        def reemplazo(match):
-            url_original = match.group(1)
-            texto_visible = match.group(2)
-
-            token = generar_token(remitente, destinatario, url_original)
-
-            tracking_url = (
-                "https://click-tracker-vszi.onrender.com/click"
-                f"?from={quote(remitente)}"
-                f"&to={quote(destinatario)}"
-                f"&sent={quote(timestamp)}"
-                f"&url={quote(url_original)}"
-                f"&token={token}"
-            )
-
-            # Mantener el texto visible original
-            return f'<a href="{tracking_url}">{unescape(texto_visible)}</a>'
-
-        # Reemplazar todos los <a href="...">...</a>
-        return re.sub(
-            r'<a\s+href="(https?://[^"]+)"[^>]*>(.*?)</a>',
-            reemplazo,
-            cuerpo_html,
-            flags=re.IGNORECASE | re.DOTALL
-        )
 
     try:
         if not outlook_responde():
@@ -162,14 +125,15 @@ def crear_borrador(
             return False
 
         timestamp_envio = datetime.utcnow().isoformat()
-        cuerpo_con_tracking = reemplazar_links_por_tracking(cuerpo_html, cuenta, destinatario, timestamp_envio)
+        cuerpo_con_tracking = reemplazar_links_por_tracking(
+            cuerpo_html, cuenta, destinatario, timestamp_envio
+        )
 
         mensaje.Subject = asunto
         mensaje.To = destinatario
         mensaje.BodyFormat = 2
         mensaje.HTMLBody = cuerpo_con_tracking + firma
 
-        # Agregar propiedad MetodoEnvio
         mensaje.UserProperties.Add("MetodoEnvio", 1, True)
         mensaje.UserProperties["MetodoEnvio"].Value = metodo_envio
 
@@ -183,6 +147,43 @@ def crear_borrador(
         messagebox.showerror("Error al crear borrador", f"Ocurrió un error:\n{e}")
         return False
 
+def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario: str, timestamp: str) -> str:
+    """
+    Reemplaza todos los links en el HTML por links con tracking y token.
+    """
+    import re
+    from html import unescape
+    from urllib.parse import quote
+    import hashlib
+
+    def generar_token(remitente: str, destinatario: str, url: str, secreto: str = "clave-secreta") -> str:
+        base = f"{remitente}-{destinatario}-{url}-{secreto}"
+        return hashlib.sha256(base.encode()).hexdigest()
+
+    def reemplazo(match):
+        url_original = match.group(1)
+        texto_visible = match.group(2)
+
+        token = generar_token(remitente, destinatario, url_original)
+
+        tracking_url = (
+            "https://click-tracker-vszi.onrender.com/click"
+            f"?from={quote(remitente)}"
+            f"&to={quote(destinatario)}"
+            f"&sent={quote(timestamp)}"
+            f"&url={quote(url_original)}"
+            f"&token={token}"
+        )
+
+        return f'<a href="{tracking_url}">{unescape(texto_visible)}</a>'
+
+    return re.sub(
+        r'<a\s+href="(https?://[^"]+)"[^>]*>(.*?)</a>',
+        reemplazo,
+        cuerpo_html,
+        flags=re.IGNORECASE | re.DOTALL
+    )
+
 def crear_borrador_respuesta(
     cuenta: str,
     destinatario: str,
@@ -192,7 +193,7 @@ def crear_borrador_respuesta(
 ) -> bool:
     """
     Crea un borrador que simula una respuesta al último correo enviado,
-    pero como un MailItem normal (para permitir envío programado).
+    aplicando tracking de enlaces como en Envio1.
     """
     import pythoncom
     import win32com.client
@@ -233,14 +234,23 @@ def crear_borrador_respuesta(
         mensaje.To = destinatario
         mensaje.Subject = "Re: " + (correo_anterior.Subject or "")
 
-        # Construir el cuerpo con el mensaje original citado
-        cuerpo_original = correo_anterior.Body or ""
-        cuerpo_html_original = correo_anterior.HTMLBody or ""
+        # Generar timestamp
+        timestamp_envio = datetime.utcnow().isoformat()
 
+        # Reemplazar links por tracking en el nuevo cuerpo
+        cuerpo_html_tracking = reemplazar_links_por_tracking(
+            cuerpo_html,
+            remitente=cuenta,
+            destinatario=destinatario,
+            timestamp=timestamp_envio
+        )
+
+        # Construir el cuerpo con el mensaje original citado
+        cuerpo_original = correo_anterior.HTMLBody or correo_anterior.Body or ""
         cuerpo_completo = (
-            cuerpo_html
+            cuerpo_html_tracking
             + "<br><br><hr><b>Mensaje anterior:</b><br>"
-            + cuerpo_html_original
+            + cuerpo_original
         )
 
         mensaje.HTMLBody = cuerpo_completo
