@@ -192,8 +192,7 @@ def crear_borrador_respuesta(
     perfil_outlook: str = ""
 ) -> bool:
     """
-    Crea un borrador que simula una respuesta al último correo enviado,
-    aplicando tracking de enlaces como en Envio1.
+    Crea un borrador que realmente sea un reply, con tracking en la parte nueva.
     """
     import pythoncom
     import win32com.client
@@ -214,7 +213,8 @@ def crear_borrador_respuesta(
         if not cuenta_encontrada:
             raise Exception(f"No se encontró la cuenta: {cuenta}")
 
-        sent_folder = namespace.GetDefaultFolder(5)  # olFolderSentMail
+        # Buscar correo anterior en enviados de la cuenta correcta
+        sent_folder = cuenta_encontrada.DeliveryStore.GetDefaultFolder(5)
         items = sent_folder.Items
         items.Sort("[SentOn]", True)
 
@@ -227,17 +227,13 @@ def crear_borrador_respuesta(
         if not correo_anterior:
             raise Exception(f"No se encontró correo previo enviado a {destinatario}")
 
-        # Crear nuevo MailItem
-        mensaje = outlook.CreateItem(0)
-        mensaje._oleobj_.Invoke(*(64209, 0, 8, 0, cuenta_encontrada))
-
-        mensaje.To = destinatario
-        mensaje.Subject = "Re: " + (correo_anterior.Subject or "")
+        # Crear un reply real
+        reply = correo_anterior.Reply()
 
         # Generar timestamp
         timestamp_envio = datetime.utcnow().isoformat()
 
-        # Reemplazar links por tracking en el nuevo cuerpo
+        # Reemplazar links por tracking en tu nuevo contenido
         cuerpo_html_tracking = reemplazar_links_por_tracking(
             cuerpo_html,
             remitente=cuenta,
@@ -245,22 +241,19 @@ def crear_borrador_respuesta(
             timestamp=timestamp_envio
         )
 
-        # Construir el cuerpo con el mensaje original citado
-        cuerpo_original = correo_anterior.HTMLBody or correo_anterior.Body or ""
-        cuerpo_completo = (
+        # Construir el nuevo HTML final
+        reply.HTMLBody = (
             cuerpo_html_tracking
-            + "<br><br><hr><b>Mensaje anterior:</b><br>"
-            + cuerpo_original
+            + "<br><br>"
+            + reply.HTMLBody
         )
 
-        mensaje.HTMLBody = cuerpo_completo
-
         # Asignar propiedad MetodoEnvio
-        mensaje.UserProperties.Add("MetodoEnvio", 1, True)
-        mensaje.UserProperties["MetodoEnvio"].Value = metodo_envio
+        reply.UserProperties.Add("MetodoEnvio", 1, True)
+        reply.UserProperties["MetodoEnvio"].Value = metodo_envio
 
-        mensaje.Save()
-        mensaje.Close(1)
+        reply.Save()
+        reply.Close(1)
 
         return True
 
