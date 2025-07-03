@@ -42,6 +42,7 @@ def registrar_envio(
         with psycopg2.connect(DATABASE_URL) as conn:
             with conn.cursor() as cur:
                 if evento == "envio":
+                    # Insert SIN url_destino
                     cur.execute("""
                         INSERT INTO envios_clicks (
                             remitente,
@@ -49,29 +50,30 @@ def registrar_envio(
                             metodo_envio,
                             asunto,
                             fecha_envio,
-                            token,
-                            url_destino
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            token
+                        ) VALUES (%s, %s, %s, %s, %s, %s)
                     """, (
                         remitente,
                         destinatario,
                         metodo_envio,
                         asunto,
                         fecha_evento,
-                        token,
-                        url_destino
+                        token
                     ))
                     print(f"[✓] Envío registrado correctamente para {destinatario}")
 
                 elif evento == "click":
+                    # Update: incrementa contador, actualiza fecha, y si url_destino está NULL, lo escribe
                     cur.execute("""
                         UPDATE envios_clicks
                         SET
                             clicks_count = COALESCE(clicks_count,0) + 1,
-                            last_click_at = %s
+                            last_click_at = %s,
+                            url_destino = COALESCE(url_destino, %s)
                         WHERE token = %s
                     """, (
                         fecha_evento,
+                        url_destino,
                         token
                     ))
                     if cur.rowcount == 0:
