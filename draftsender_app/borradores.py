@@ -192,7 +192,8 @@ def crear_borrador_respuesta(
     perfil_outlook: str = ""
 ) -> bool:
     """
-    Crea un borrador que realmente sea un reply, con tracking en la parte nueva.
+    Crea un borrador que sea un reply real, con tracking en la parte nueva.
+    Asegura que el destinatario sea correctamente el destinatario original.
     """
     import pythoncom
     import win32com.client
@@ -214,7 +215,7 @@ def crear_borrador_respuesta(
             raise Exception(f"No se encontró la cuenta: {cuenta}")
 
         # Buscar correo anterior en enviados de la cuenta correcta
-        sent_folder = cuenta_encontrada.DeliveryStore.GetDefaultFolder(5)
+        sent_folder = cuenta_encontrada.DeliveryStore.GetDefaultFolder(5)  # olFolderSentMail
         items = sent_folder.Items
         items.Sort("[SentOn]", True)
 
@@ -233,7 +234,7 @@ def crear_borrador_respuesta(
         # Generar timestamp
         timestamp_envio = datetime.utcnow().isoformat()
 
-        # Reemplazar links por tracking en tu nuevo contenido
+        # Reemplazar links por tracking en el nuevo contenido
         cuerpo_html_tracking = reemplazar_links_por_tracking(
             cuerpo_html,
             remitente=cuenta,
@@ -247,6 +248,17 @@ def crear_borrador_respuesta(
             + "<br><br>"
             + reply.HTMLBody
         )
+
+        # Validar destinatario
+        if reply.To.lower() != destinatario.lower():
+            import logging
+            logger = logging.getLogger("DraftSender")
+            logger.warning(
+                f"El destinatario del reply era '{reply.To}'. Se reemplaza por '{destinatario}'."
+            )
+
+        # Sobrescribir destinatario para que NO se ponga tu propio correo
+        reply.To = destinatario
 
         # Asignar propiedad MetodoEnvio
         reply.UserProperties.Add("MetodoEnvio", 1, True)
