@@ -53,32 +53,19 @@ def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
     try:
         exe_actual = sys.executable
 
-        # Cerrar instancias activas
-        cerrar_procesos_relacionados(os.path.basename(exe_actual))
-        time.sleep(1)
-
-        # Crear carpeta /data/versiones si no existe
-        carpeta_versiones = os.path.join("data", "versiones")
-        os.makedirs(carpeta_versiones, exist_ok=True)
-
-        # Mover el ejecutable actual a /data/versiones/
-        nombre_actual = os.path.basename(exe_actual)
-        destino = os.path.join(carpeta_versiones, nombre_actual)
-        try:
-            shutil.move(exe_actual, destino)
-        except Exception as e:
-            logger.warning(f"No se pudo mover el ejecutable actual: {e}")
-
-        # Guardar nueva versión en data/version.txt
+        # Guardar nueva versión en version.txt antes de salir
         os.makedirs(os.path.dirname(VERSION_FILE), exist_ok=True)
         with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
 
-        # Mover el nuevo ejecutable a la ruta del actual
-        shutil.move(ruta_nuevo_exe, exe_actual)
+        # Llama al update_runner como proceso separado
+        runner_script = os.path.join(os.path.dirname(__file__), "update_runner.py")
 
-        # Reiniciar aplicación
-        subprocess.Popen([exe_actual], close_fds=True)
+        subprocess.Popen(
+            [sys.executable, runner_script, ruta_nuevo_exe, exe_actual, os.path.basename(exe_actual)],
+            close_fds=True
+        )
+
         sys.exit(0)
 
     except Exception as e:
