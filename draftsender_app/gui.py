@@ -103,7 +103,7 @@ class DraftSenderApp:
         menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
         menu_ayuda = tk.Menu(menu_bar, tearoff=0)
-        menu_ayuda.add_command(label="Ver Instructivo (README)", command=self.mostrar_readme)
+        menu_ayuda.add_command(label="Ver Instructivo", command=self.mostrar_readme)
         menu_ayuda.add_command(label="Acerca de", command=self.mostrar_acerca_de)
         menu_bar.add_cascade(label="Ayuda", menu=menu_ayuda)
 
@@ -122,18 +122,25 @@ class DraftSenderApp:
 
     def mostrar_readme(self):
         """
-            Muestra el archivo README.txt en una ventana emergente de lectura.
-            El instructivo se carga desde la carpeta 'config' y se presenta en un widget de texto.
-            """
+        Muestra el archivo README.txt en una ventana emergente de lectura.
+        El instructivo se carga desde la carpeta 'data' y se presenta en un widget de texto.
+        """
         try:
+            # Obtiene la ruta base donde está ejecutándose el EXE o el script
             base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-            ruta_readme = os.path.join(base_path, "config", "README.txt")
+
+            # Carpeta "data" al mismo nivel que el ejecutable
+            ruta_readme = os.path.join(base_path, "data", "README.txt")
 
             if not os.path.exists(ruta_readme):
-                messagebox.showwarning("Instructivo no encontrado", "No se pudo localizar el archivo README.txt.")
+                messagebox.showwarning(
+                    "Instructivo no encontrado",
+                    f"No se pudo localizar el archivo README.txt en:\n{ruta_readme}"
+                )
                 return
 
-            with open(ruta_readme, "r", encoding="utf-8") as f: contenido = f.read()
+            with open(ruta_readme, "r", encoding="utf-8") as f:
+                contenido = f.read()
 
             ventana = tk.Toplevel(self.root)
             ventana.title("Instructivo de uso - DraftSender")
@@ -150,7 +157,10 @@ class DraftSenderApp:
 
         except Exception as e:
             logger.error(f"Error al mostrar README.txt: {e}")
-            messagebox.showerror("Error", "No se pudo mostrar el instructivo.")
+            messagebox.showerror(
+                "Error",
+                f"No se pudo mostrar el instructivo:\n{e}"
+            )
 
     def crear_encabezado(self):
         """
