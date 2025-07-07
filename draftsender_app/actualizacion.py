@@ -66,6 +66,7 @@ def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
             close_fds=True
         )
 
+        # Salir inmediatamente para liberar el ejecutable
         sys.exit(0)
 
     except Exception as e:
