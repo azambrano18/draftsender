@@ -123,14 +123,11 @@ class DraftSenderApp:
     def mostrar_readme(self):
         """
         Muestra el archivo README.txt en una ventana emergente de lectura.
-        El instructivo se carga desde la carpeta 'data' y se presenta en un widget de texto.
+        El instructivo se carga desde C:\DraftSender_app\data\README.txt.
         """
         try:
-            # Obtiene la ruta base donde está ejecutándose el EXE o el script
-            base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-
-            # Carpeta "data" al mismo nivel que el ejecutable
-            ruta_readme = os.path.join(base_path, "data", "README.txt")
+            # Ruta fija
+            ruta_readme = r"C:\DraftSender_app\data\README.txt"
 
             if not os.path.exists(ruta_readme):
                 messagebox.showwarning(

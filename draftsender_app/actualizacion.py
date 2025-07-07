@@ -52,26 +52,27 @@ def descargar_actualizacion(url: str, nueva_version: str, nombre_exe: str):
 def reemplazar_y_reiniciar(ruta_nuevo_exe, nueva_version):
     try:
         exe_actual = sys.executable
+        pid_actual = str(os.getpid())
 
-        # Guardar nueva versión en version.txt antes de salir
+        # Guardar la nueva versión
         os.makedirs(os.path.dirname(VERSION_FILE), exist_ok=True)
         with open(VERSION_FILE, "w", encoding="utf-8") as f:
             f.write(nueva_version)
 
-        # Llama al update_runner como proceso separado
+        # Ruta del runner
         runner_script = os.path.join(os.path.dirname(__file__), "update_runner.py")
 
+        # Llamar al runner con el PID
         subprocess.Popen(
-            [sys.executable, runner_script, ruta_nuevo_exe, exe_actual, os.path.basename(exe_actual)],
+            [sys.executable, runner_script, ruta_nuevo_exe, exe_actual, os.path.basename(exe_actual), pid_actual],
             close_fds=True
         )
 
-        # Salir inmediatamente para liberar el ejecutable
         sys.exit(0)
 
     except Exception as e:
         logger.error(f"Error durante reemplazo y reinicio: {e}")
-        messagebox.showerror("Actualización", f"Ocurrió un error al actualizar la aplicación:\n{e}")
+        messagebox.showerror("Actualización", f"Ocurrió un error al actualizar:\n{e}")
 
 def ejecutar_actualizacion(forzar=False):
     try:
