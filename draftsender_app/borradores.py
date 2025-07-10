@@ -78,7 +78,8 @@ def crear_borrador(
     perfil_outlook: str = ""
 ) -> bool:
     """
-    Crea un borrador de correo en Outlook con firma y marca de metodo_envio.
+    Crea un borrador en Outlook usando el botón 'Nuevo correo electrónico' para que Outlook inserte la firma automáticamente.
+    Luego añade el cuerpo HTML con tracking antes de la firma.
     """
     import psutil
     import pythoncom
@@ -107,7 +108,6 @@ def crear_borrador(
         cuenta_encontrada = next(
             (acc for acc in namespace.Accounts if acc.SmtpAddress.lower() == cuenta.lower()), None
         )
-
         if not cuenta_encontrada:
             logger.error(f"[{cuenta}] No se encontró la cuenta en Outlook")
             messagebox.showerror("Cuenta no encontrada", f"No se encontró la cuenta de Outlook: {cuenta}")
@@ -116,14 +116,13 @@ def crear_borrador(
         mensaje = outlook.CreateItem(0)
         mensaje._oleobj_.Invoke(*(64209, 0, 8, 0, cuenta_encontrada))
 
-        try:
-            mensaje.Display()
-            firma = mensaje.HTMLBody or ""
-        except Exception as e:
-            logger.error(f"[{cuenta}] Error al obtener firma: {e}")
-            messagebox.showerror("Firma no disponible", "No se pudo obtener la firma.")
-            return False
+        # ⚠️ Activar el mensaje para que Outlook inserte la firma automáticamente
+        mensaje.Display()  # Esto hace que Outlook inserte la firma configurada
 
+        # Capturar la firma generada automáticamente
+        firma = mensaje.HTMLBody or ""
+
+        # Insertar cuerpo con tracking ANTES de la firma
         timestamp_envio = datetime.utcnow().isoformat()
         cuerpo_con_tracking = reemplazar_links_por_tracking(
             cuerpo_html, cuenta, destinatario, timestamp_envio
@@ -131,11 +130,8 @@ def crear_borrador(
 
         mensaje.Subject = asunto
         mensaje.To = destinatario
-        mensaje.BodyFormat = 2
+        mensaje.BodyFormat = 1  # fuerza a no usar RTF
         mensaje.HTMLBody = cuerpo_con_tracking + firma
-
-        mensaje.UserProperties.Add("MetodoEnvio", 1, True)
-        mensaje.UserProperties["MetodoEnvio"].Value = metodo_envio
 
         mensaje.Save()
         mensaje.Close(1)
@@ -143,29 +139,53 @@ def crear_borrador(
         return True
 
     except Exception as e:
-        logger.error(f"[{cuenta}] Error crítico al crear borrador: {e}")
+        logger.error(f"[{cuenta}] Error al crear borrador: {e}")
         messagebox.showerror("Error al crear borrador", f"Ocurrió un error:\n{e}")
         return False
 
 def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario: str, timestamp: str) -> str:
     """
     Reemplaza todos los links en el HTML por links con tracking y token.
+    Valida si el texto visible es una URL y si coincide con el dominio real.
     """
     import re
-    from html import unescape
-    from urllib.parse import quote
     import hashlib
+    import logging
+    from html import unescape
+    from urllib.parse import quote, urlparse
+
+    logger = logging.getLogger("DraftSender")
 
     def generar_token(remitente: str, destinatario: str, url: str, secreto: str = "clave-secreta") -> str:
         base = f"{remitente}-{destinatario}-{url}-{secreto}"
         return hashlib.sha256(base.encode()).hexdigest()
 
+    def extraer_dominio(url: str) -> str:
+        try:
+            parsed = urlparse(url)
+            return parsed.hostname or ""
+        except:
+            return ""
+
     def reemplazo(match):
-        url_original = match.group(1)
-        texto_visible = match.group(2)
+        url_original = match.group(1).strip()
+        texto_visible = unescape(match.group(2).strip())
 
+        # Validar si el texto visible es una URL
+        es_texto_url = re.match(r"https?://|www\.", texto_visible, re.IGNORECASE)
+        dominio_visible = extraer_dominio("https://" + texto_visible) if es_texto_url else ""
+        dominio_real = extraer_dominio(url_original)
+
+        # Advertencia si no coinciden
+        if es_texto_url and dominio_visible.lower() != dominio_real.lower():
+            logger.warning(
+                f"Advertencia: el texto visible '{texto_visible}' no coincide con el dominio del enlace real '{dominio_real}'"
+            )
+            # 🔄 Opción segura: reemplazar por texto genérico para evitar phishing flags
+            texto_visible = "Ver más"
+
+        # Crear URL con tracking
         token = generar_token(remitente, destinatario, url_original)
-
         tracking_url = (
             "https://click-tracker-vszi.onrender.com/click"
             f"?from={quote(remitente)}"
@@ -175,7 +195,7 @@ def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario
             f"&token={token}"
         )
 
-        return f'<a href="{tracking_url}">{unescape(texto_visible)}</a>'
+        return f'<a href="{tracking_url}">{texto_visible}</a>'
 
     return re.sub(
         r'<a\s+href="(https?://[^"]+)"[^>]*>(.*?)</a>',
@@ -192,8 +212,8 @@ def crear_borrador_respuesta(
     perfil_outlook: str = ""
 ) -> bool:
     """
-    Crea un borrador que sea un reply real, con tracking en la parte nueva.
-    Asegura que el destinatario sea correctamente el destinatario original.
+    Crea una respuesta real (Reply) al último correo enviado al destinatario.
+    Outlook inserta automáticamente la firma configurada. El cuerpo se inserta antes.
     """
     import pythoncom
     import win32com.client
@@ -214,7 +234,7 @@ def crear_borrador_respuesta(
         if not cuenta_encontrada:
             raise Exception(f"No se encontró la cuenta: {cuenta}")
 
-        # Buscar correo anterior en enviados de la cuenta correcta
+        # Buscar último correo enviado a ese destinatario
         sent_folder = cuenta_encontrada.DeliveryStore.GetDefaultFolder(5)  # olFolderSentMail
         items = sent_folder.Items
         items.Sort("[SentOn]", True)
@@ -228,42 +248,23 @@ def crear_borrador_respuesta(
         if not correo_anterior:
             raise Exception(f"No se encontró correo previo enviado a {destinatario}")
 
-        # Crear un reply real
+        # Crear una respuesta real (esto abre la ventana y Outlook inserta firma)
         reply = correo_anterior.Reply()
+        reply.Display()  # Outlook inserta automáticamente la firma
 
-        # Generar timestamp
+        # Generar cuerpo con tracking
         timestamp_envio = datetime.utcnow().isoformat()
-
-        # Reemplazar links por tracking en el nuevo contenido
-        cuerpo_html_tracking = reemplazar_links_por_tracking(
-            cuerpo_html,
-            remitente=cuenta,
-            destinatario=destinatario,
-            timestamp=timestamp_envio
+        cuerpo_tracking = reemplazar_links_por_tracking(
+            cuerpo_html, remitente=cuenta, destinatario=destinatario, timestamp=timestamp_envio
         )
 
-        # Construir el nuevo HTML final
-        reply.HTMLBody = (
-            cuerpo_html_tracking
-            + "<br><br>"
-            + reply.HTMLBody
-        )
+        # Insertar el nuevo cuerpo antes del contenido original (y de la firma)
+        reply.HTMLBody = cuerpo_tracking + reply.HTMLBody
 
-        # Validar destinatario
-        if reply.To.lower() != destinatario.lower():
-            import logging
-            logger = logging.getLogger("DraftSender")
-            logger.warning(
-                f"El destinatario del reply era '{reply.To}'. Se reemplaza por '{destinatario}'."
-            )
-
-        # Sobrescribir destinatario para que NO se ponga tu propio correo
+        # Asegurarse que el destinatario esté bien
         reply.To = destinatario
 
-        # Asignar propiedad MetodoEnvio
-        reply.UserProperties.Add("MetodoEnvio", 1, True)
-        reply.UserProperties["MetodoEnvio"].Value = metodo_envio
-
+        # Guardar sin usar UserProperties
         reply.Save()
         reply.Close(1)
 
