@@ -6,6 +6,7 @@ import logging
 import warnings
 from tkinter import messagebox
 from draftsender_app.validaciones import es_email_valido, validar_columnas_obligatorias
+TRACKING_ENABLED = False     # ← Pon en True si quieres reactivar el tracking de links
 
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl.reader.drawings")
 
@@ -116,7 +117,7 @@ def crear_borrador(
         mensaje = outlook.CreateItem(0)
         mensaje._oleobj_.Invoke(*(64209, 0, 8, 0, cuenta_encontrada))
 
-        # ⚠️ Activar el mensaje para que Outlook inserte la firma automáticamente
+        # Activar el mensaje para que Outlook inserte la firma automáticamente
         mensaje.Display()  # Esto hace que Outlook inserte la firma configurada
 
         # Capturar la firma generada automáticamente
@@ -145,9 +146,13 @@ def crear_borrador(
 
 def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario: str, timestamp: str) -> str:
     """
-    Reemplaza todos los links en el HTML por links con tracking y token.
-    Valida si el texto visible es una URL y si coincide con el dominio real.
+    [DESACTIVADA POR FLAG] Devuelve el HTML sin modificar cuando TRACKING_ENABLED es False.
+    Mantiene la firma y compatibilidad con llamadas existentes.
     """
+    if not TRACKING_ENABLED:
+        return cuerpo_html  # ← NO cambia enlaces; deja el original
+
+    # --- código actual debajo se mantiene intacto para reactivación futura ---
     import re
     import hashlib
     import logging
@@ -181,7 +186,7 @@ def reemplazar_links_por_tracking(cuerpo_html: str, remitente: str, destinatario
             logger.warning(
                 f"Advertencia: el texto visible '{texto_visible}' no coincide con el dominio del enlace real '{dominio_real}'"
             )
-            # 🔄 Opción segura: reemplazar por texto genérico para evitar phishing flags
+            # Opción segura: reemplazar por texto genérico para evitar phishing flags
             texto_visible = "Ver más"
 
         # Crear URL con tracking
