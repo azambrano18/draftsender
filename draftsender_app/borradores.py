@@ -6,6 +6,8 @@ import logging
 import warnings
 from tkinter import messagebox
 from draftsender_app.validaciones import es_email_valido, validar_columnas_obligatorias
+from draftsender_app.archivos import leer_excel_destinatarios
+
 TRACKING_ENABLED = False     # ← Pon en True si quieres reactivar el tracking de links
 
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl.reader.drawings")
@@ -313,7 +315,7 @@ def generar_borradores(
         raise FileNotFoundError("No se encontró el archivo Word.")
 
     # Leer Excel
-    df = pd.read_excel(ruta_excel, sheet_name=1)
+    df = leer_excel_destinatarios(ruta_excel)
 
     if not validar_columnas_obligatorias(set(df.columns)):
         raise ValueError("El Excel no contiene las columnas obligatorias.")

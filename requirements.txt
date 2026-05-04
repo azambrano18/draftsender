@@ -6,7 +6,7 @@ requests
 mammoth
 python-docx
 pytz
-psycopg2
+psycopg2-binary
 Pillow
 dnspython
 pywinauto

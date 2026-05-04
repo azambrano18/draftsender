@@ -294,8 +294,9 @@ class DraftSenderApp:
         self.boton_cargar_excel = tk.Button(
             frame_excel,
             text="Cargar Excel",
-            command=lambda: (cargar_excel(self.ruta_excel_var, self.ruta_excel_path)
-                             and validar_excel_gui(self.ruta_excel_path.get())) or self.actualizar_estado_post_carga(),
+            command=lambda: (validar_excel_gui(self.ruta_excel_path.get())
+                                if cargar_excel(self.ruta_excel_var, self.ruta_excel_path)
+                                else False) or self.actualizar_estado_post_carga(),
             font=("Arial", 10),
             state="disabled"
         )
