@@ -102,14 +102,23 @@ class DraftSenderApp:
 
     def crear_menu(self):
         """
+        gui.py > crear_menu
         Crea la barra de menú principal de la aplicación con las opciones:
         - Archivo: Actualizar, Salir
-        - Ayuda: Ver instructivo (README), Acerca de
+        - Ayuda: Ver instructivo, Acerca de
+
+        Además verifica en segundo plano si existe una nueva versión.
+        Si hay actualización disponible:
+        - habilita el botón Actualizar
+        - muestra un aviso al usuario
         """
         menu_bar = tk.Menu(self.root)
 
         menu_archivo = tk.Menu(menu_bar, tearoff=0)
-        menu_archivo.add_command(label="Actualizar", command=self.actualizar_aplicacion_intermedia)
+        menu_archivo.add_command(
+            label="Actualizar",
+            command=self.actualizar_aplicacion_intermedia
+        )
         menu_archivo.add_command(label="Salir", command=self.root.quit)
         menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
 
@@ -120,16 +129,50 @@ class DraftSenderApp:
 
         self.root.config(menu=menu_bar)
 
-        # Desactiva el botón "Actualizar" por defecto
-        menu_archivo.entryconfig("Actualizar", state="disabled")
-        self.menu_archivo = menu_archivo  # Guardamos la referencia para luego activarlo
+        self.menu_archivo = menu_archivo
+        self.menu_archivo.entryconfig("Actualizar", state="disabled")
 
-        # Verifica si hay una nueva versión en segundo plano
-        def habilitar_si_hay_actualizacion():
-            if hay_nueva_version_disponible():
-                self.root.after(0, lambda: self.menu_archivo.entryconfig("Actualizar", state="normal"))
+        self.root.after(3000, self.verificar_actualizacion_al_inicio)
 
-        threading.Thread(target=habilitar_si_hay_actualizacion, daemon=True).start()
+    def verificar_actualizacion_al_inicio(self):
+        """
+        gui.py > verificar_actualizacion_al_inicio
+        Verifica si hay una nueva versión disponible al iniciar la app.
+
+        Si existe:
+        - habilita Archivo > Actualizar
+        - muestra aviso al usuario
+        """
+
+        def tarea():
+            try:
+                hay_actualizacion = hay_nueva_version_disponible()
+
+                if not hay_actualizacion:
+                    return
+
+                def avisar():
+                    try:
+                        self.menu_archivo.entryconfig("Actualizar", state="normal")
+
+                        respuesta = messagebox.askyesno(
+                            "Nueva versión disponible",
+                            "Hay una nueva versión de DraftSender disponible.\n\n"
+                            "¿Quieres actualizar ahora?"
+                        )
+
+                        if respuesta:
+                            self.actualizar_aplicacion_intermedia()
+
+                    except Exception as e:
+                        logger.error(f"Error mostrando aviso de actualización: {e}")
+
+                self.root.after(0, avisar)
+
+            except Exception as e:
+                logger.warning(f"No se pudo verificar actualización al inicio: {e}")
+
+        threading.Thread(target=tarea, daemon=True).start()
 
     def mostrar_readme(self):
         """
@@ -582,8 +625,58 @@ class DraftSenderApp:
             pass
 
     def actualizar_aplicacion_intermedia(self):
-        import threading
-        threading.Thread(target=lambda: ejecutar_actualizacion(forzar=True), daemon=True).start()
+        """
+        gui.py > actualizar_aplicacion_intermedia
+        Ejecuta la actualización manual desde el menú Archivo > Actualizar.
+        """
+
+        def tarea():
+            try:
+                self.root.after(
+                    0,
+                    lambda: self.status_var.set("Descargando actualización...")
+                )
+
+                actualizado = ejecutar_actualizacion(forzar=True)
+
+                if not actualizado:
+                    self.root.after(
+                        0,
+                        lambda: messagebox.showinfo(
+                            "Sin actualizaciones",
+                            "Ya tienes instalada la última versión disponible."
+                        )
+                    )
+                    return
+
+                def cerrar_app():
+                    messagebox.showinfo(
+                        "Actualización en proceso",
+                        "La actualización fue descargada.\n\n"
+                        "DraftSender se cerrará y se abrirá la nueva versión."
+                    )
+
+                    try:
+                        self.root.quit()
+                    finally:
+                        self.root.destroy()
+
+                self.root.after(0, cerrar_app)
+
+            except Exception as e:
+                logger.exception("Error al ejecutar actualización")
+                self.root.after(
+                    0,
+                    lambda: messagebox.showerror(
+                        "Error de actualización",
+                        f"No se pudo ejecutar la actualización:\n{e}"
+                    )
+                )
+
+            finally:
+                self.root.after(0, lambda: self.status_var.set(""))
+
+        threading.Thread(target=tarea, daemon=True).start()
 
     def mostrar_acerca_de(self):
         """
