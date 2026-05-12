@@ -408,65 +408,96 @@ class DraftSenderApp:
 
     def _crear_borradores_en_hilo(self):
         """
-        Ejecuta el proceso de creación de borradores en un hilo separado para no bloquear la interfaz.
-        Llama a la versión que devuelve cantidad, errores y mensaje final. Muestra solo un aviso final.
+        gui.py > _crear_borradores_en_hilo
+        Ejecuta el proceso de creación de borradores sin bloquear la interfaz.
+        Usa el perfil real seleccionado, no la cuenta de correo.
         """
         from draftsender_app.borradores import generar_borradores
 
         try:
             metodo = self.metodo_envio_var.get()
+            perfil_outlook = self.combo_perfiles.get().strip() if self.combo_perfiles else ""
 
             if metodo == "Selecciona método":
-                messagebox.showwarning("Método no seleccionado",
-                                       "Debes seleccionar un método de creación de borradores.")
-                self.status_var.set("")
+                self.root.after(
+                    0,
+                    lambda: messagebox.showwarning(
+                        "Método no seleccionado",
+                        "Debes seleccionar un método de creación de borradores.",
+                    ),
+                )
+                self.root.after(0, lambda: self.status_var.set(""))
                 return
 
-            self.status_var.set("Creando borradores...")
-            self.frame_progreso.pack(pady=(5, 5))
-            self.status_label.pack()
+            self.root.after(0, lambda: self.status_var.set("Creando borradores..."))
+            self.root.after(0, lambda: self.frame_progreso.pack(pady=(5, 5)))
+            self.root.after(0, self.status_label.pack)
 
             enviados, errores, mensaje = generar_borradores(
                 cuenta=self.cuenta_seleccionada,
-                perfil=self.cuenta_seleccionada,
+                perfil=perfil_outlook,
                 ruta_excel=self.ruta_excel_path.get(),
                 ruta_docx=self.ruta_docx_path.get(),
                 modo_envio=metodo,
-                callback_progreso=self.wrapper_callback
+                callback_progreso=self.wrapper_callback,
             )
 
-            self.status_var.set("Proceso completado")
+            self.root.after(0, lambda: self.status_var.set("Proceso completado"))
             self.root.after(8000, self.ocultar_barra_progreso)
 
             if errores:
-                messagebox.showwarning("Errores en el proceso", mensaje)
+                self.root.after(
+                    0,
+                    lambda: messagebox.showwarning("Errores en el proceso", mensaje),
+                )
             else:
-                messagebox.showinfo("Borradores creados", mensaje)
+                self.root.after(
+                    0,
+                    lambda: messagebox.showinfo("Borradores creados", mensaje),
+                )
 
         except Exception as e:
             logger.exception("Error al crear borradores")
-            self.status_var.set("Ocurrió un error al crear los borradores.")
-            messagebox.showerror("Error", f"Ocurrió un error inesperado:\n{e}")
+            self.root.after(
+                0,
+                lambda: self.status_var.set("Ocurrió un error al crear los borradores."),
+            )
+            self.root.after(
+                0,
+                lambda: messagebox.showerror(
+                    "Error",
+                    f"Ocurrió un error inesperado:\n{e}",
+                ),
+            )
 
     def wrapper_callback(self, fila_actual, total_filas):
         """
-        Callback que envuelve y maneja el resultado del proceso de creación de borradores.
-        Muestra mensajes al usuario al finalizar, dependiendo del resultado.
+        gui.py > wrapper_callback
+        Actualiza progreso de forma segura desde el hilo principal de Tkinter.
         """
-        porcentaje = int((fila_actual / total_filas) * 100)
-        self.barra_progreso["value"] = porcentaje
-        self.porcentaje_var.set(f"{porcentaje}%")
 
-        mensaje = f"{porcentaje}% - Procesando fila {fila_actual} de {total_filas}"
+        def actualizar_ui():
+            if total_filas <= 0:
+                return
 
-        if fila_actual == 1:
-            self.frame_progreso.pack(pady=(5, 5))
-            self.status_label.pack()
-            self.root.geometry("")
+            porcentaje = int((fila_actual / total_filas) * 100)
 
-        if fila_actual == total_filas:
-            self.status_var.set("¡Borradores creados con éxito!")
-            self.root.after(8000, self.ocultar_barra_progreso)
+            self.barra_progreso["value"] = porcentaje
+            self.porcentaje_var.set(f"{porcentaje}%")
+            self.status_var.set(
+                f"{porcentaje}% - Procesando fila {fila_actual} de {total_filas}"
+            )
+
+            if fila_actual == 1:
+                self.frame_progreso.pack(pady=(5, 5))
+                self.status_label.pack()
+                self.root.geometry("")
+
+            if fila_actual == total_filas:
+                self.status_var.set("¡Borradores creados con éxito!")
+                self.root.after(8000, self.ocultar_barra_progreso)
+
+        self.root.after(0, actualizar_ui)
 
     def lanzar_envio_gui(self):
         """
@@ -551,16 +582,40 @@ class DraftSenderApp:
 
     def validar_estado_para_boton_borradores(self):
         """
-        Valida si todos los elementos requeridos (cuenta, archivos, metodo) están listos
-        para habilitar el botón de creación de borradores.
+        gui.py > validar_estado_para_boton_borradores
+        Habilita Crear Borradores solo si hay cuenta, método y archivos válidos.
         """
         if not self.boton_crear_borradores:
             return
 
-        archivos_cargados = self.ruta_excel_path.get() and self.ruta_docx_path.get()
+        cuenta_ok = bool(
+            self.cuenta_seleccionada
+            and es_email_valido(self.cuenta_seleccionada)
+        )
+
+        metodo = (
+            self.metodo_envio_var.get()
+            if hasattr(self, "metodo_envio_var")
+            else "Selecciona método"
+        )
+
+        metodo_ok = bool(metodo and metodo != "Selecciona método")
+
+        excel_ok = bool(
+            self.ruta_excel_path.get()
+            and os.path.exists(self.ruta_excel_path.get())
+        )
+
+        docx_ok = bool(
+            self.ruta_docx_path.get()
+            and os.path.exists(self.ruta_docx_path.get())
+        )
+
+        estado = "normal" if cuenta_ok and metodo_ok and excel_ok and docx_ok else "disabled"
 
         try:
-            self.boton_crear_borradores.config(state="normal" if archivos_cargados else "disabled")
+            self.boton_crear_borradores.config(state=estado)
+
         except tk.TclError as e:
             logger.warning(f"No se pudo actualizar el botón de borradores: {e}")
 

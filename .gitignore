@@ -61,5 +61,3 @@ desktop.ini
 .coverage
 .pytest_cache/
 .mypy_cache/
-
-.github/workflows/*.yml_no
