@@ -36,15 +36,58 @@ def normalizar_version(version: str) -> str:
     return VERSION_DEFAULT
 
 
+def obtener_base_app() -> str:
+    """
+    version.py > obtener_base_app
+    Devuelve la carpeta base externa de ejecución.
+
+    Se mantiene por compatibilidad con actualizacion.py.
+
+    En modo .exe:
+        carpeta donde está DraftSender_vX.X.exe
+
+    En modo desarrollo:
+        raíz del proyecto.
+    """
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
+def obtener_data_path() -> str:
+    """
+    version.py > obtener_data_path
+    Devuelve la carpeta data externa.
+
+    Se mantiene por compatibilidad con módulos existentes.
+    No se usa para leer la versión del título.
+    """
+    data_path = os.path.join(obtener_base_app(), "data")
+    os.makedirs(data_path, exist_ok=True)
+    return data_path
+
+
+def obtener_version_file_path() -> str:
+    """
+    version.py > obtener_version_file_path
+    Devuelve la ruta externa data/version.txt.
+
+    Se mantiene por compatibilidad, pero obtener_version_local()
+    NO usa esta ruta como fuente de verdad.
+    """
+    return os.path.join(obtener_data_path(), "version.txt")
+
+
 def obtener_ruta_version_embebida() -> str:
     """
     version.py > obtener_ruta_version_embebida
     Devuelve la ruta del version.txt incluido dentro del .exe por PyInstaller.
 
-    En GitHub Actions, este archivo se genera desde el tag:
+    GitHub Actions genera este archivo desde el tag:
         github.ref_name
 
-    Luego PyInstaller lo incluye con:
+    PyInstaller lo incluye con:
         --add-data "draftsender_app/data/version.txt;data"
     """
     if getattr(sys, "frozen", False):
@@ -60,8 +103,8 @@ def obtener_version_local() -> str:
     version.py > obtener_version_local
     Lee exclusivamente la versión embebida dentro del ejecutable.
 
-    No lee C:\\DraftSender_app\\data\\version.txt para evitar usar una versión antigua
-    persistida de una instalación previa.
+    No lee C:\\DraftSender_app\\data\\version.txt para evitar mostrar
+    una versión antigua persistida de instalaciones anteriores.
     """
     ruta_version = obtener_ruta_version_embebida()
 
@@ -76,6 +119,23 @@ def obtener_version_local() -> str:
 
     except Exception:
         return VERSION_DEFAULT
+
+
+def guardar_version_local(version: str) -> None:
+    """
+    version.py > guardar_version_local
+    Guarda una versión en data/version.txt externo.
+
+    Se mantiene por compatibilidad con código existente, pero no debe usarse
+    como fuente del título de la ventana.
+    """
+    version_normalizada = normalizar_version(version)
+    version_path = obtener_version_file_path()
+
+    os.makedirs(os.path.dirname(version_path), exist_ok=True)
+
+    with open(version_path, "w", encoding="utf-8") as archivo:
+        archivo.write(version_normalizada)
 
 
 def version_a_tupla(version: str) -> Tuple[int, int, int]:
