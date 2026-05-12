@@ -254,26 +254,37 @@ def crear_acceso_directo_escritorio(ruta_exe: Path) -> None:
     """
     actualizacion.py > crear_acceso_directo_escritorio
     Crea o actualiza el acceso directo del escritorio.
+
+    Importante:
+    Esta función puede ejecutarse desde un hilo secundario, por eso debe
+    inicializar COM con pythoncom.CoInitialize().
     """
     try:
+        import pythoncom
         import win32com.client
 
-        escritorio = Path(os.path.join(os.environ["USERPROFILE"], "Desktop"))
-        acceso_directo = escritorio / SHORTCUT_NAME
+        pythoncom.CoInitialize()
 
-        if acceso_directo.exists():
-            acceso_directo.unlink()
+        try:
+            escritorio = Path(os.path.join(os.environ["USERPROFILE"], "Desktop"))
+            acceso_directo = escritorio / SHORTCUT_NAME
 
-        shell = win32com.client.Dispatch("WScript.Shell")
-        shortcut = shell.CreateShortcut(str(acceso_directo))
+            if acceso_directo.exists():
+                acceso_directo.unlink()
 
-        shortcut.TargetPath = str(ruta_exe)
-        shortcut.WorkingDirectory = str(ruta_exe.parent)
-        shortcut.IconLocation = str(ruta_exe)
-        shortcut.Description = "DraftSender"
-        shortcut.Save()
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortcut(str(acceso_directo))
 
-        updater_logger.info("Acceso directo actualizado: %s", acceso_directo)
+            shortcut.TargetPath = str(ruta_exe)
+            shortcut.WorkingDirectory = str(ruta_exe.parent)
+            shortcut.IconLocation = str(ruta_exe)
+            shortcut.Description = "DraftSender"
+            shortcut.Save()
+
+            updater_logger.info("Acceso directo actualizado: %s", acceso_directo)
+
+        finally:
+            pythoncom.CoUninitialize()
 
     except Exception as e:
         updater_logger.exception("No se pudo actualizar acceso directo: %s", e)
