@@ -29,7 +29,18 @@ class DraftSenderApp:
     def __init__(self, root: tk.Tk, *, titulo_ventana: str = "DraftSender"):
         self.root = root
         self.nombre_usuario = titulo_ventana.split(" - ")[-1].strip()
-        self.root.title(f"{titulo_ventana.split(' - ')[0]} - Creador de Borradores - {titulo_ventana.split(' - ')[1]}")
+
+        # gui.py > configuración del título de ventana
+        titulo_actual = self.root.title()
+
+        partes_titulo = titulo_actual.split(" - ", 1)
+
+        if len(partes_titulo) == 2:
+            nombre_app, nombre_usuario = partes_titulo
+            self.root.title(f"{nombre_app} - Creador de Borradores - {nombre_usuario}")
+        else:
+            self.root.title(f"{titulo_actual} - Creador de Borradores")
+
         self.root.geometry("600x400")
         self.tamano_inicial = self.root.winfo_geometry()
 
