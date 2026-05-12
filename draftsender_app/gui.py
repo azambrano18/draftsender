@@ -627,7 +627,9 @@ class DraftSenderApp:
     def actualizar_aplicacion_intermedia(self):
         """
         gui.py > actualizar_aplicacion_intermedia
-        Ejecuta la actualización manual desde el menú Archivo > Actualizar.
+        Ejecuta la actualización manual desde Archivo > Actualizar.
+        Después de lanzar el actualizador externo, cierra la app actual
+        para que el .bat pueda reemplazar el ejecutable.
         """
 
         def tarea():
@@ -649,11 +651,11 @@ class DraftSenderApp:
                     )
                     return
 
-                def cerrar_app():
+                def cerrar_app_para_actualizar():
                     messagebox.showinfo(
-                        "Actualización en proceso",
-                        "La actualización fue descargada correctamente.\n\n"
-                        "DraftSender se cerrará y se abrirá la nueva versión."
+                        "Actualización descargada",
+                        "La nueva versión fue descargada correctamente.\n\n"
+                        "DraftSender se cerrará para completar la actualización."
                     )
 
                     try:
@@ -661,7 +663,7 @@ class DraftSenderApp:
                     finally:
                         self.root.destroy()
 
-                self.root.after(0, cerrar_app)
+                self.root.after(0, cerrar_app_para_actualizar)
 
             except Exception as e:
                 logger.exception("Error al ejecutar actualización")

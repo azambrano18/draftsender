@@ -287,13 +287,15 @@ def crear_script_reemplazo(
 ) -> Path:
     """
     actualizacion.py > crear_script_reemplazo
-    Crea un .bat que espera a que cierre DraftSender, reemplaza y abre la nueva versión.
+    Crea un .bat que espera a que cierre DraftSender, instala la nueva versión
+    con su nombre correcto y abre el nuevo ejecutable.
     """
-    bat_path = Path(tempfile.gettempdir()) / "draftsender_update.bat"
+    bat_path = DATA_DIR / "actualizar_draftsender.bat"
     log_path = LOGS_DIR / "updater_bat.log"
 
     contenido = f"""@echo off
 chcp 65001 > nul
+setlocal enabledelayedexpansion
 
 echo =============================== >> "{log_path}"
 echo Iniciando actualizacion DraftSender >> "{log_path}"
@@ -305,42 +307,59 @@ echo EXE actual: "{exe_actual}" >> "{log_path}"
 echo Esperando cierre de DraftSender...
 echo Esperando cierre de DraftSender... >> "{log_path}"
 
+set /a INTENTOS=0
+
 :waitloop
 tasklist /FI "PID eq {pid_actual}" | find "{pid_actual}" > nul
 if not errorlevel 1 (
+    set /a INTENTOS+=1
+    echo Esperando cierre. Intento !INTENTOS! >> "{log_path}"
     timeout /t 1 /nobreak > nul
+
+    if !INTENTOS! GEQ 60 (
+        echo ERROR: El proceso no cerro despues de 60 segundos. >> "{log_path}"
+        exit /b 10
+    )
+
     goto waitloop
 )
 
 echo Proceso anterior cerrado. >> "{log_path}"
 
 if not exist "{exe_temporal}" (
-    echo ERROR: No existe el archivo temporal descargado. >> "{log_path}"
-    pause
+    echo ERROR: No existe el archivo temporal descargado: "{exe_temporal}" >> "{log_path}"
     exit /b 1
 )
 
+echo Copiando nueva version... >> "{log_path}"
 copy /Y "{exe_temporal}" "{exe_final}" >> "{log_path}" 2>&1
 
-if not exist "{exe_final}" (
-    echo ERROR: No se pudo crear el exe final. >> "{log_path}"
-    pause
-    exit /b 1
+if errorlevel 1 (
+    echo ERROR: Fallo copy hacia exe final. >> "{log_path}"
+    exit /b 2
 )
 
-del "{exe_temporal}" >> "{log_path}" 2>&1
+if not exist "{exe_final}" (
+    echo ERROR: No se pudo crear el exe final: "{exe_final}" >> "{log_path}"
+    exit /b 3
+)
+
+echo Eliminando temporal... >> "{log_path}"
+del /F /Q "{exe_temporal}" >> "{log_path}" 2>&1
 
 if exist "{exe_actual}" (
     if /I not "{exe_actual}"=="{exe_final}" (
-        del "{exe_actual}" >> "{log_path}" 2>&1
+        echo Eliminando version anterior: "{exe_actual}" >> "{log_path}"
+        del /F /Q "{exe_actual}" >> "{log_path}" 2>&1
     )
 )
 
-echo Abriendo nueva version... >> "{log_path}"
+echo Abriendo nueva version: "{exe_final}" >> "{log_path}"
 start "" "{exe_final}"
 
 echo Actualizacion completada. >> "{log_path}"
 
+timeout /t 2 /nobreak > nul
 del "%~f0" > nul 2>&1
 """
 
