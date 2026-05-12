@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import tempfile
@@ -16,8 +17,24 @@ from draftsender_app.version import (
 GITHUB_API_LATEST = "https://api.github.com/repos/azambrano18/draftsender/releases/latest"
 
 INSTALL_DIR = Path(r"C:\DraftSender_app")
+DATA_DIR = INSTALL_DIR / "data"
+LOGS_DIR = DATA_DIR / "logs"
+
 APP_EXE_PREFIX = "DraftSender"
 SHORTCUT_NAME = "DraftSender.lnk"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+updater_logger = logging.getLogger("DraftSenderUpdater")
+updater_logger.setLevel(logging.INFO)
+
+if not updater_logger.handlers:
+    file_handler = logging.FileHandler(LOGS_DIR / "updater.log", encoding="utf-8")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(message)s"
+    )
+    file_handler.setFormatter(formatter)
+    updater_logger.addHandler(file_handler)
 
 
 def obtener_directorio_app() -> Path:
@@ -47,18 +64,28 @@ def obtener_ejecutable_actual() -> Path:
     return Path(__file__).resolve()
 
 
+def obtener_pid_actual() -> int:
+    """
+    actualizacion.py > obtener_pid_actual
+    Devuelve el PID del proceso actual.
+    """
+    return os.getpid()
+
+
 def obtener_release_latest() -> Dict[str, Any]:
     """
     actualizacion.py > obtener_release_latest
     Consulta el último release publicado en GitHub.
     """
+    updater_logger.info("Consultando release latest en GitHub...")
+
     response = requests.get(
         GITHUB_API_LATEST,
         headers={
             "Accept": "application/vnd.github+json",
             "User-Agent": "DraftSender-App-Updater",
         },
-        timeout=25,
+        timeout=30,
     )
 
     response.raise_for_status()
@@ -71,6 +98,8 @@ def obtener_release_latest() -> Dict[str, Any]:
     if not release.get("assets"):
         raise RuntimeError("El release latest no tiene assets adjuntos.")
 
+    updater_logger.info("Release latest detectado: %s", release.get("tag_name"))
+
     return release
 
 
@@ -81,7 +110,7 @@ def seleccionar_asset_exe(release: Dict[str, Any]) -> Dict[str, Any]:
 
     Acepta:
     - DraftSender_v1.5.exe
-    - DraftSender_v1.5.1.exe
+    - DraftSender_v1.5.5.exe
 
     Rechaza:
     - setup_installer.exe
@@ -120,7 +149,11 @@ def seleccionar_asset_exe(release: Dict[str, Any]) -> Dict[str, Any]:
             f"Assets encontrados:\n{encontrados or 'ninguno'}"
         )
 
-    return candidatos[0]
+    asset = candidatos[0]
+
+    updater_logger.info("Asset seleccionado: %s", asset.get("name"))
+
+    return asset
 
 
 def obtener_info_actualizacion() -> Dict[str, Any]:
@@ -137,6 +170,13 @@ def obtener_info_actualizacion() -> Dict[str, Any]:
 
     disponible = es_version_mayor(version_remota, version_actual)
 
+    updater_logger.info(
+        "Comparación de versiones. Actual=%s, Remota=%s, Disponible=%s",
+        version_actual,
+        version_remota,
+        disponible,
+    )
+
     return {
         "disponible": disponible,
         "version_actual": version_actual,
@@ -151,14 +191,14 @@ def obtener_info_actualizacion() -> Dict[str, Any]:
 def hay_nueva_version_disponible() -> bool:
     """
     actualizacion.py > hay_nueva_version_disponible
-    Función usada por gui.py.
     Retorna True si existe una versión remota mayor que la actual.
     """
     try:
         info = obtener_info_actualizacion()
         return bool(info.get("disponible"))
 
-    except Exception:
+    except Exception as e:
+        updater_logger.exception("Error verificando actualización: %s", e)
         return False
 
 
@@ -184,6 +224,9 @@ def descargar_asset(asset: Dict[str, Any]) -> Path:
     if destino_temporal.exists():
         destino_temporal.unlink()
 
+    updater_logger.info("Descargando actualización desde: %s", url)
+    updater_logger.info("Destino temporal: %s", destino_temporal)
+
     with requests.get(url, stream=True, timeout=180) as response:
         response.raise_for_status()
 
@@ -192,8 +235,17 @@ def descargar_asset(asset: Dict[str, Any]) -> Path:
                 if chunk:
                     archivo.write(chunk)
 
-    if not destino_temporal.exists() or destino_temporal.stat().st_size == 0:
-        raise RuntimeError("La descarga de actualización quedó vacía o incompleta.")
+    if not destino_temporal.exists():
+        raise RuntimeError("No se creó el archivo temporal de actualización.")
+
+    size = destino_temporal.stat().st_size
+
+    updater_logger.info("Descarga finalizada. Tamaño: %s bytes", size)
+
+    if size < 1024 * 1024:
+        raise RuntimeError(
+            f"La descarga parece inválida o incompleta. Tamaño recibido: {size} bytes."
+        )
 
     return destino_temporal
 
@@ -221,41 +273,80 @@ def crear_acceso_directo_escritorio(ruta_exe: Path) -> None:
         shortcut.Description = "DraftSender"
         shortcut.Save()
 
-    except Exception:
-        # No bloqueamos la actualización si falla el acceso directo.
-        pass
+        updater_logger.info("Acceso directo actualizado: %s", acceso_directo)
+
+    except Exception as e:
+        updater_logger.exception("No se pudo actualizar acceso directo: %s", e)
 
 
-def crear_script_reemplazo(exe_temporal: Path, exe_final: Path, exe_actual: Path) -> Path:
+def crear_script_reemplazo(
+    exe_temporal: Path,
+    exe_final: Path,
+    exe_actual: Path,
+    pid_actual: int,
+) -> Path:
     """
     actualizacion.py > crear_script_reemplazo
-    Crea un .bat que reemplaza el ejecutable actual cuando la app se cierre.
+    Crea un .bat que espera a que cierre DraftSender, reemplaza y abre la nueva versión.
     """
     bat_path = Path(tempfile.gettempdir()) / "draftsender_update.bat"
+    log_path = LOGS_DIR / "updater_bat.log"
 
     contenido = f"""@echo off
 chcp 65001 > nul
-echo Actualizando DraftSender...
-timeout /t 2 /nobreak > nul
 
-copy /Y "{exe_temporal}" "{exe_final}" > nul
+echo =============================== >> "{log_path}"
+echo Iniciando actualizacion DraftSender >> "{log_path}"
+echo PID actual: {pid_actual} >> "{log_path}"
+echo EXE temporal: "{exe_temporal}" >> "{log_path}"
+echo EXE final: "{exe_final}" >> "{log_path}"
+echo EXE actual: "{exe_actual}" >> "{log_path}"
 
-if exist "{exe_final}" (
-    del "{exe_temporal}" > nul 2>&1
+echo Esperando cierre de DraftSender...
+echo Esperando cierre de DraftSender... >> "{log_path}"
+
+:waitloop
+tasklist /FI "PID eq {pid_actual}" | find "{pid_actual}" > nul
+if not errorlevel 1 (
+    timeout /t 1 /nobreak > nul
+    goto waitloop
 )
+
+echo Proceso anterior cerrado. >> "{log_path}"
+
+if not exist "{exe_temporal}" (
+    echo ERROR: No existe el archivo temporal descargado. >> "{log_path}"
+    pause
+    exit /b 1
+)
+
+copy /Y "{exe_temporal}" "{exe_final}" >> "{log_path}" 2>&1
+
+if not exist "{exe_final}" (
+    echo ERROR: No se pudo crear el exe final. >> "{log_path}"
+    pause
+    exit /b 1
+)
+
+del "{exe_temporal}" >> "{log_path}" 2>&1
 
 if exist "{exe_actual}" (
     if /I not "{exe_actual}"=="{exe_final}" (
-        del "{exe_actual}" > nul 2>&1
+        del "{exe_actual}" >> "{log_path}" 2>&1
     )
 )
 
+echo Abriendo nueva version... >> "{log_path}"
 start "" "{exe_final}"
+
+echo Actualizacion completada. >> "{log_path}"
 
 del "%~f0" > nul 2>&1
 """
 
     bat_path.write_text(contenido, encoding="utf-8")
+
+    updater_logger.info("Script de reemplazo creado: %s", bat_path)
 
     return bat_path
 
@@ -273,8 +364,16 @@ def preparar_actualizacion(info: Dict[str, Any]) -> Path:
     exe_temporal = descargar_asset(asset)
 
     nombre_final = str(asset.get("name", "")).strip()
+
+    if not nombre_final:
+        raise RuntimeError("El asset no tiene nombre final válido.")
+
     exe_final = obtener_directorio_app() / nombre_final
     exe_actual = obtener_ejecutable_actual()
+    pid_actual = obtener_pid_actual()
+
+    updater_logger.info("EXE actual: %s", exe_actual)
+    updater_logger.info("EXE final: %s", exe_final)
 
     crear_acceso_directo_escritorio(exe_final)
 
@@ -282,6 +381,7 @@ def preparar_actualizacion(info: Dict[str, Any]) -> Path:
         exe_temporal=exe_temporal,
         exe_final=exe_final,
         exe_actual=exe_actual,
+        pid_actual=pid_actual,
     )
 
 
@@ -290,6 +390,8 @@ def ejecutar_script_actualizacion(bat_path: Path) -> None:
     actualizacion.py > ejecutar_script_actualizacion
     Ejecuta el .bat de actualización.
     """
+    updater_logger.info("Ejecutando script de actualización: %s", bat_path)
+
     subprocess.Popen(
         ["cmd.exe", "/c", str(bat_path)],
         creationflags=subprocess.CREATE_NEW_CONSOLE,
@@ -299,19 +401,14 @@ def ejecutar_script_actualizacion(bat_path: Path) -> None:
 def ejecutar_actualizacion(forzar: bool = False) -> bool:
     """
     actualizacion.py > ejecutar_actualizacion
-    Función usada por gui.py.
+    Ejecuta el flujo de actualización.
 
-    Si forzar=True:
-        permite ejecutar desde el menú Actualizar.
-
-    Retorna True si preparó la actualización.
+    Retorna True si preparó y lanzó el actualizador.
     """
     info = obtener_info_actualizacion()
 
-    if not info.get("disponible") and not forzar:
-        return False
-
-    if not info.get("disponible") and forzar:
+    if not info.get("disponible"):
+        updater_logger.info("No hay actualización disponible.")
         return False
 
     bat_path = preparar_actualizacion(info)

@@ -652,7 +652,7 @@ class DraftSenderApp:
                 def cerrar_app():
                     messagebox.showinfo(
                         "Actualización en proceso",
-                        "La actualización fue descargada.\n\n"
+                        "La actualización fue descargada correctamente.\n\n"
                         "DraftSender se cerrará y se abrirá la nueva versión."
                     )
 
